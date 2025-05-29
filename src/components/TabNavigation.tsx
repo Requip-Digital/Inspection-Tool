@@ -12,7 +12,7 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
   onTabChange 
 }) => {
   return (
-    <div className="flex border-b border-gray-200 mb-4 overflow-x-auto">
+    <div className="flex border-b border-gray-200 mb-4 overflow-x-auto [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-transparent">
       {tabs.map((tab) => (
         <button
           key={tab}

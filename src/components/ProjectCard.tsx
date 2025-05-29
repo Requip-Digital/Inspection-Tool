@@ -16,7 +16,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
 
   return (
     <div 
-      className="bg-white rounded-lg shadow-md overflow-hidden mb-4 hover:shadow-lg transition-shadow cursor-pointer"
+      className="bg-white rounded-lg shadow-sm overflow-hidden mb-4 hover:shadow-lg transition-shadow cursor-pointer"
       onClick={handleClick}
     >
       <div className="flex">

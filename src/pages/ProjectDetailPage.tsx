@@ -88,11 +88,13 @@ const ProjectDetailPage: React.FC = () => {
         <div className="mb-6">
           <h3 className="text-xl font-bold mb-4">Machines</h3>
           
-          <SearchBar
-            placeholder="Search machines"
-            value={searchTerm}
-            onChange={setSearchTerm}
-          />
+          <div className='mb-4'>
+            <SearchBar
+              placeholder="Search machines"
+              value={searchTerm}
+              onChange={setSearchTerm}
+            />
+          </div>
 
           {filteredMachines.length === 0 ? (
             <div className="bg-white rounded-lg shadow-sm p-6 text-center">
