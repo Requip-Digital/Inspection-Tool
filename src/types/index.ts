@@ -41,7 +41,7 @@ export interface Field {
   label: string;
   placeholder?: string;
   required?: boolean;
-  options?: string[];
+  options?: string[] | number[];
   helpText?: string;
   validation?: {
     pattern?: string;

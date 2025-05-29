@@ -61,16 +61,10 @@ export const MOCK_TEMPLATES: Template[] = [
           {
             id: 'model',
             name: 'model',
-            type: 'text',
-            label: 'Model',
-            required: true
-          },
-          {
-            id: 'typeOfFabric',
-            name: 'typeOfFabric',
             type: 'select',
-            label: 'Type of Fabric',
-            options: ['Cotton', 'Denim', 'Polyester', 'Wool']
+            label: 'Model',
+            options: ["JAT 610", "JAT 710", "JAT 810", "JAT 910"],
+            required: true
           },
           {
             id: 'yearOfMfg',
@@ -78,23 +72,203 @@ export const MOCK_TEMPLATES: Template[] = [
             type: 'number',
             label: 'Year of Mfg',
             validation: {
-              min: 1900,
+              min: 2000,
               max: new Date().getFullYear(),
-              message: 'Please enter a valid year'
+              message: 'Only above 2000'
             }
+          },
+          {
+            id: 'typeOfFabric',
+            name: 'typeOfFabric',
+            type: 'select',
+            label: 'Type Of Fabric',
+            options: [
+              "Velvet", "Carpet", "Terry", "Label", "Tyre Cord", "Denim", "Grey",
+              "Yarn Dyed", "Jacquard Fabric", "Georget", "Matras Sticking",
+              "Upholsterry", "Kanvas", "Net", "Bed Sheet", "Sarong/Sari"
+            ]
+          },
+          {
+            id: 'sheddingMechanism',
+            name: 'sheddingMechanism',
+            type: 'select',
+            label: 'Shedding Mechanism',
+            options: ["Crank", "Cam", "Dobby", "E shedding"]
           }
         ]
       },
       {
-        id: 'criticalComp',
-        name: 'Critical Comp.',
+        id: 'structuralSpecs',
+        name: 'Structural Specifications',
         fields: [
           {
-            id: 'compStatus',
-            name: 'compStatus',
+            id: 'workingWidth',
+            name: 'workingWidth',
             type: 'select',
-            label: 'Component Status',
-            options: ['Excellent', 'Good', 'Fair', 'Poor']
+            label: 'Working Width (cm)',
+            options: ["150", "170", "190", "210", "230", "250", "280", "340", "360"]
+          },
+          {
+            id: 'warpBeamDia',
+            name: 'warpBeamDia',
+            type: 'text',
+            label: 'Warp Beam Dia (mm)'
+          },
+          {
+            id: 'doubleBeam',
+            name: 'doubleBeam',
+            type: 'select',
+            label: 'Double Beam',
+            options: ["Yes", "No"]
+          }
+        ]
+      },
+      {
+        id: 'weftInsertion',
+        name: 'Weft Insertion System',
+        fields: [
+          {
+            id: 'noOfNozzles',
+            name: 'noOfNozzles',
+            type: 'number',
+            label: 'No of Nozzles'
+          },
+          {
+            id: 'noOfWeftFeeder',
+            name: 'noOfWeftFeeder',
+            type: 'number',
+            label: 'No. of Weft Feeder'
+          }
+        ]
+      },
+      {
+        id: 'sheddingSystem',
+        name: 'Shedding System',
+        fields: [
+          {
+            id: 'sheddingMotionMake',
+            name: 'sheddingMotionMake',
+            type: 'select',
+            label: 'Shedding Motion Make',
+            options: ["Staubli", "Yamada", "Toyota", "Filmtex"]
+          },
+          {
+            id: 'sheddingMotionCapacity',
+            name: 'sheddingMotionCapacity',
+            type: 'select',
+            label: 'Shedding Motion Capacity (Lever)',
+            options: ["24", "10", "20", "12", "16", "8", "6", "4", "7", "14", "9"]
+          },
+          {
+            id: 'sheddingMotionInstalled',
+            name: 'sheddingMotionInstalled',
+            type: 'select',
+            label: 'Shedding Motion Installed Capacity (Lever)',
+            options: ["24", "10", "20", "12", "16", "8", "6", "4", "7", "14", "9"]
+          },
+          {
+            id: 'noOfFramesSupplied',
+            name: 'noOfFramesSupplied',
+            type: 'number',
+            label: 'No of Frames Supplied'
+          },
+          {
+            id: 'noOfHealdWire',
+            name: 'noOfHealdWire',
+            type: 'number',
+            label: 'No of Heald Wire Supplied/Set'
+          },
+          {
+            id: 'noOfDropper',
+            name: 'noOfDropper',
+            type: 'number',
+            label: 'No of Dropper Supplied'
+          }
+        ]
+      },
+      {
+        id: 'warpControl',
+        name: 'Warp Control',
+        fields: [
+          {
+            id: 'easingMotion',
+            name: 'easingMotion',
+            type: 'select',
+            label: 'Easing Motion',
+            options: ["Available", "Not Available"]
+          },
+          {
+            id: 'noOfWarpStopBar',
+            name: 'noOfWarpStopBar',
+            type: 'number',
+            label: 'No of Warp Stop Bar'
+          },
+          {
+            id: 'noOfWarpBeamSupplied',
+            name: 'noOfWarpBeamSupplied',
+            type: 'number',
+            label: 'No of Warp Beam Supplied'
+          },
+          {
+            id: 'letOffMotion',
+            name: 'letOffMotion',
+            type: 'select',
+            label: 'Let-off Motion',
+            options: ["Mechanical", "Electronic"]
+          }
+        ]
+      },
+      {
+        id: 'criticalComponents',
+        name: 'Critical Components',
+        fields: [
+          {
+            id: 'selvedgeType',
+            name: 'selvedgeType',
+            type: 'select',
+            label: 'Selvedge Type',
+            options: ["Rotary Leno", "Leno", "Tuck-in", "E Leno", "Eurotech"]
+          },
+          {
+            id: 'noOfBackRestRoll',
+            name: 'noOfBackRestRoll',
+            type: 'select',
+            label: 'No of Back Rest Roll',
+            options: ["1", "2"]
+          },
+          {
+            id: 'noOfReedSupplied',
+            name: 'noOfReedSupplied',
+            type: 'number',
+            label: 'No of Reed Supplied'
+          },
+          {
+            id: 'clothTakeUpType',
+            name: 'clothTakeUpType',
+            type: 'select',
+            label: 'Cloth Take-Up Type',
+            options: ["Off loom (batching)", "on loom (cloth roll)"]
+          },
+          {
+            id: 'takeUpMotion',
+            name: 'takeUpMotion',
+            type: 'select',
+            label: 'Take up Motion',
+            options: ["Mechanical", "Electronic"]
+          },
+          {
+            id: 'templeType',
+            name: 'templeType',
+            type: 'select',
+            label: 'Temple Type',
+            options: ["Normal", "Full width"]
+          },
+          {
+            id: 'noOfClothRollSupplied',
+            name: 'noOfClothRollSupplied',
+            type: 'select',
+            label: 'No of Cloth Roll Supplied',
+            options: ["1", "1.5", "2"]
           }
         ]
       },
@@ -103,11 +277,31 @@ export const MOCK_TEMPLATES: Template[] = [
         name: 'Electrical',
         fields: [
           {
+            id: 'inverter',
+            name: 'inverter',
+            type: 'select',
+            label: 'Inverter',
+            options: ["Group", "Individual", "No inverter supplied"]
+          },
+          {
+            id: 'electricPanelBox',
+            name: 'electricPanelBox',
+            type: 'text',
+            label: 'Electric Panel Box'
+          },
+          {
             id: 'voltage',
             name: 'voltage',
-            type: 'number',
+            type: 'select',
             label: 'Voltage',
-            required: true
+            options: ["200", "220", "380", "440", "560"],
+          },
+          {
+            id: 'frequency',
+            name: 'frequency',
+            type: 'select',
+            label: 'Frequency',
+            options: ["50", "60"]
           }
         ]
       },
@@ -116,9 +310,29 @@ export const MOCK_TEMPLATES: Template[] = [
         name: 'Accessories',
         fields: [
           {
+            id: 'machineRunningRpm',
+            name: 'machineRunningRpm',
+            type: 'text',
+            label: 'Machine Running RPM'
+          },
+          {
+            id: 'beamType',
+            name: 'beamType',
+            type: 'select',
+            label: 'Beam Type',
+            options: ["Single beam", "Twin beam"]
+          },
+          {
+            id: 'autoPickFinder',
+            name: 'autoPickFinder',
+            type: 'select',
+            label: 'Auto Pick Finder',
+            options: ["Available", "Not Available"]
+          },
+          {
             id: 'accessoryList',
             name: 'accessoryList',
-            type: 'multiselect',
+            type: 'select',
             label: 'Accessories',
             options: ['Manual', 'Tool Kit', 'Spare Parts', 'Cleaning Kit']
           }
@@ -135,25 +349,12 @@ export const MOCK_TEMPLATES: Template[] = [
         name: 'General',
         fields: [
           {
-            id: 'millMachineNo',
-            name: 'millMachineNo',
-            type: 'text',
-            label: 'Mill Machine No',
-            required: true
-          },
-          {
             id: 'model',
             name: 'model',
-            type: 'text',
-            label: 'Model',
-            required: true
-          },
-          {
-            id: 'typeOfFabric',
-            name: 'typeOfFabric',
             type: 'select',
-            label: 'Type of Fabric',
-            options: ['Cotton', 'Denim', 'Polyester', 'Wool']
+            label: 'Model',
+            options: ["OmniPlus", "OmniPlus 800", "Summum", "OmniPlus i Connect"],
+            required: true
           },
           {
             id: 'yearOfMfg',
@@ -161,27 +362,250 @@ export const MOCK_TEMPLATES: Template[] = [
             type: 'number',
             label: 'Year of Mfg',
             validation: {
-              min: 1900,
+              min: 2000,
               max: new Date().getFullYear(),
-              message: 'Please enter a valid year'
+              message: 'Only above 2000'
             }
+          },
+          {
+            id: 'typeOfFabric',
+            name: 'typeOfFabric',
+            type: 'select',
+            label: 'Type Of Fabric',
+            options: [
+              "Velvet", "Carpet", "Terry", "Label", "Tyre Cord", "Denim", "Grey",
+              "Yarn Dyed", "Jacquard Fabric", "Georget", "Matras Sticking",
+              "Upholsterry", "Kanvas", "Net", "Bed Sheet", "Sarong/Sari"
+            ]
           }
         ]
       },
       {
-        id: 'criticalComp',
-        name: 'Critical Comp.',
-        fields: []
+        id: 'criticalComponents',
+        name: 'Critical Components',
+        fields: [
+          {
+            id: 'sheddingMechanism',
+            name: 'sheddingMechanism',
+            type: 'select',
+            label: 'Shedding Mechanism',
+            options: ["Cam", "Crank", "Dobby"]
+          },
+          {
+            id: 'sheddingMotionType',
+            name: 'sheddingMotionType',
+            type: 'select',
+            label: 'Shedding Motion Type',
+            options: ["Mechanical", "Electronic"]
+          },
+          {
+            id: 'workingWidth',
+            name: 'workingWidth',
+            type: 'select',
+            label: 'Working Width (cm)',
+            options: ["190", "220", "250", "280", "340"]
+          },
+          {
+            id: 'noOfNozzles',
+            name: 'noOfNozzles',
+            type: 'select',
+            label: 'No of Nozzles',
+            options: ["2", "4", "6"]
+          },
+          {
+            id: 'noOfPrewinder',
+            name: 'noOfPrewinder',
+            type: 'select',
+            label: 'No of Prewinder/Set',
+            options: ["2", "4", "6"]
+          },
+          {
+            id: 'noOfFramesSupplied',
+            name: 'noOfFramesSupplied',
+            type: 'number',
+            label: 'No of Frames Supplied'
+          },
+          {
+            id: 'sheddingMotionMake',
+            name: 'sheddingMotionMake',
+            type: 'select',
+            label: 'Shedding Motion Make',
+            options: ["Staubli"]
+          },
+          {
+            id: 'sheddingMotionCapacity',
+            name: 'sheddingMotionCapacity',
+            type: 'select',
+            label: 'Shedding Motion Capacity',
+            options: ["24", "10", "20", "12", "16", "8", "6", "4", "7", "14", "9"]
+          },
+          {
+            id: 'sheddingMotionInstalled',
+            name: 'sheddingMotionInstalled',
+            type: 'select',
+            label: 'Shedding Motion Installed Capacity',
+            options: ["24", "10", "20", "12", "16", "8", "6", "4", "7", "14", "9"]
+          }
+        ]
       },
       {
-        id: 'electrical',
-        name: 'Electrical',
-        fields: []
+        id: 'electricalInspection',
+        name: 'Electrical Inspection',
+        fields: [
+          
+        ]
       },
       {
         id: 'accessories',
         name: 'Accessories',
-        fields: []
+        fields: [
+          {
+            id: 'numberOfBeamPipes',
+            name: 'numberOfBeamPipes',
+            type: 'number',
+            label: 'Number of Beam Pipes'
+          },
+          {
+            id: 'beamPipeDiameter',
+            name: 'beamPipeDiameter',
+            type: 'text',
+            label: 'Beam Pipe Diameter (mm)'
+          },
+          {
+            id: 'numberOfClothRolls',
+            name: 'numberOfClothRolls',
+            type: 'select',
+            label: 'Number of Cloth Rolls',
+            options: ["1", "1.5", "2"]
+          },
+          {
+            id: 'noOfBackRestRoll',
+            name: 'noOfBackRestRoll',
+            type: 'select',
+            label: 'No of Back Rest Roll',
+            options: ["1", "2"]
+          },
+          {
+            id: 'noOfWarpStopBar',
+            name: 'noOfWarpStopBar',
+            type: 'number',
+            label: 'No of Warp Stop Bar'
+          },
+          {
+            id: 'noOfHealdWire',
+            name: 'noOfHealdWire',
+            type: 'number',
+            label: 'No of Heald Wire Supplied/Set'
+          },
+          {
+            id: 'noOfDropper',
+            name: 'noOfDropper',
+            type: 'number',
+            label: 'No of Dropper Supplied'
+          },
+          {
+            id: 'noOfReedSupplied',
+            name: 'noOfReedSupplied',
+            type: 'number',
+            label: 'No of Reed Supplied'
+          }
+        ]
+      },
+      {
+        id: 'otherDetails',
+        name: 'Other Details',
+        fields: [
+          {
+            id: 'clothTakeUpType',
+            name: 'clothTakeUpType',
+            type: 'select',
+            label: 'Cloth Take-Up Type',
+            options: ["Off loom (batching)", "on loom (cloth roll)"]
+          },
+          {
+            id: 'topBeam',
+            name: 'topBeam',
+            type: 'select',
+            label: 'Top Beam',
+            options: ["Yes", "No"]
+          },
+          {
+            id: 'selvedgeType',
+            name: 'selvedgeType',
+            type: 'select',
+            label: 'Selvedge Type',
+            options: ["Rotary Leno", "Tuck-in", "Electronic Leno"]
+          },
+          {
+            id: 'easingMotion',
+            name: 'easingMotion',
+            type: 'select',
+            label: 'Easing Motion',
+            options: ["Available", "Not Available"]
+          },
+          {
+            id: 'takeUpMotion',
+            name: 'takeUpMotion',
+            type: 'select',
+            label: 'Take Up Motion',
+            options: ["Mechanical", "Electronic"]
+          },
+          {
+            id: 'letOffMotion',
+            name: 'letOffMotion',
+            type: 'select',
+            label: 'Let-off Motion',
+            options: ["Mechanical", "Electronic"]
+          },
+          {
+            id: 'templeType',
+            name: 'templeType',
+            type: 'select',
+            label: 'Temple Type',
+            options: ["Normal", "Full width"]
+          },
+          {
+            id: 'inverter',
+            name: 'inverter',
+            type: 'select',
+            label: 'Inverter',
+            options: ["Group", "Individual", "No inverter supplied"]
+          },
+          {
+            id: 'voltage',
+            name: 'voltage',
+            type: 'select',
+            label: 'Voltage',
+            options: ["200", "220", "380", "440", "560"]
+          },
+          {
+            id: 'frequency',
+            name: 'frequency',
+            type: 'select',
+            label: 'Frequency',
+            options: ["50", "60"]
+          },
+          {
+            id: 'machineRunningRpm',
+            name: 'machineRunningRpm',
+            type: 'text',
+            label: 'Machine Running RPM'
+          },
+          {
+            id: 'beamType',
+            name: 'beamType',
+            type: 'select',
+            label: 'Beam Type',
+            options: ["Single beam", "twin beam"]
+          },
+          {
+            id: 'autoPickFinder',
+            name: 'autoPickFinder',
+            type: 'select',
+            label: 'Auto Pick Finder',
+            options: ["Available", "Not Available"]
+          }
+        ]
       }
     ]
   }
