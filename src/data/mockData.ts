@@ -21,7 +21,7 @@ export const MOCK_PROJECTS: Project[] = [
     inspectionDate: '21/3/2024',
     city: 'Pune',
     originallyBought: 'Used',
-    mfgOrigin: 'Lorem Ipsum',
+    mfgOrigin: 'South Korea',
     template: 'Picanol',
     machines: [
       { id: '3', name: 'Machine A', sheetNumber: 1 },
