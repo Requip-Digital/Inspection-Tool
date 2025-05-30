@@ -11,7 +11,7 @@ const Header: React.FC = () => {
   return (
     <header className="bg-blue-500 text-white p-4 flex items-center justify-between sticky top-0 z-10">
       <div className="flex items-center">
-        {isHome ? <div className='w-[24px]'></div> : (
+        {isHome ? <div className='w-[32px]'></div> : (
           <button 
             className="p-1 rounded-full hover:bg-blue-600 transition-colors"
             onClick={() => navigate(-1)}
