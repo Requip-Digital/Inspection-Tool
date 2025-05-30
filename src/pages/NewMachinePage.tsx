@@ -13,6 +13,7 @@ const NewMachinePage: React.FC = () => {
     sheetNumber: 1
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [selectedMachineId, setSelectedMachineId] = useState('');
 
   useEffect(() => {
     if (projectId && projects.length > 0) {
@@ -31,7 +32,7 @@ const NewMachinePage: React.FC = () => {
     }
   }, [projectId, projects, navigate]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -44,6 +45,27 @@ const NewMachinePage: React.FC = () => {
         ...errors,
         [name]: ''
       });
+    }
+  };
+
+  const handleMachineSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const machineId = e.target.value;
+    setSelectedMachineId(machineId);
+
+    if (machineId && projectId) {
+      const project = projects.find((p) => p.id === projectId);
+      if (project) {
+        const selectedMachine = project.machines.find((m) => m.id === machineId);
+        if (selectedMachine) {
+          // Copy all fields except id, name and sheet number
+          const { id, name, sheetNumber, ...machineData } = selectedMachine;
+          setFormData((prev) => ({
+            ...machineData,
+            name: prev.name,
+            sheetNumber: prev.sheetNumber
+          }));
+        }
+      }
     }
   };
 
@@ -71,6 +93,10 @@ const NewMachinePage: React.FC = () => {
     }
   };
 
+  // Get current project and its machines
+  const currentProject = projectId ? projects.find((p) => p.id === projectId) : null;
+  const existingMachines = currentProject?.machines || [];
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
@@ -79,6 +105,29 @@ const NewMachinePage: React.FC = () => {
         <h2 className="text-2xl font-bold mb-6">Add New Machine</h2>
         
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm p-6">
+          {existingMachines.length > 0 && (
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Copy Details From
+              </label>
+              <select
+                value={selectedMachineId}
+                onChange={handleMachineSelect}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select a machine to copy from</option>
+                {existingMachines.map((machine) => (
+                  <option key={machine.id} value={machine.id}>
+                    {machine.name}
+                  </option>
+                ))}
+              </select>
+              <p className="mt-1 text-sm text-gray-500">
+                This will copy all details except name and sheet number
+              </p>
+            </div>
+          )}
+
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Machine Name
