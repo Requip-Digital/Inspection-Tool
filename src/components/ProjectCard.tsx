@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Project } from '../types';
-import { ChevronRight } from 'lucide-react';
 
 interface ProjectCardProps {
   project: Project;

@@ -63,7 +63,7 @@ const FormField: React.FC<FormFieldProps> = ({ field, value, onChange }) => {
             value={value || ''}
             onChange={handleChange}
             required={field.required}
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`w-full p-2 border border-gray-300 ${value ? 'text-gray-600' : 'text-gray-400'} rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
           >
             <option value="">Select {field.label}</option>
             {field.options?.map((option) => (
@@ -96,13 +96,7 @@ const FormField: React.FC<FormFieldProps> = ({ field, value, onChange }) => {
           <div className="mt-2">
             <div className="flex flex-wrap gap-2">
               {/* Image placeholders */}
-              <div className="w-32 h-32 bg-gray-100 flex items-center justify-center rounded-md border border-dashed border-gray-300">
-                <div className="text-center">
-                  <Camera className="mx-auto text-gray-400" size={24} />
-                  <span className="text-sm text-gray-500">Add Photo</span>
-                </div>
-              </div>
-              <div className="w-32 h-32 bg-gray-100 flex items-center justify-center rounded-md border border-dashed border-gray-300">
+              <div className="w-full h-32 bg-gray-100 flex items-center justify-center rounded-md border border-dashed border-gray-300">
                 <div className="text-center">
                   <Camera className="mx-auto text-gray-400" size={24} />
                   <span className="text-sm text-gray-500">Add Photo</span>

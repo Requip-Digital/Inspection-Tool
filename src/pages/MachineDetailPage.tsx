@@ -120,26 +120,6 @@ const MachineDetailPage: React.FC = () => {
           ) : (
             <p className="text-gray-500 py-4 text-center">No fields in this section</p>
           )}
-          
-          {activeTab === 'General' && (
-            <div className="mt-6">
-              <h3 className="text-lg font-medium mb-2">Photos</h3>
-              <div className="flex space-x-2 overflow-x-auto pb-2">
-                <div className="w-32 h-32 flex-shrink-0 bg-gray-100 flex items-center justify-center rounded-lg border border-dashed border-gray-300">
-                  <div className="text-center">
-                    <Camera className="mx-auto text-gray-400" size={24} />
-                    <span className="text-sm text-gray-500">Add Photo</span>
-                  </div>
-                </div>
-                <div className="w-32 h-32 flex-shrink-0 bg-gray-100 flex items-center justify-center rounded-lg border border-dashed border-gray-300">
-                  <div className="text-center">
-                    <Camera className="mx-auto text-gray-400" size={24} />
-                    <span className="text-sm text-gray-500">Add Photo</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
         
         {saveMessage && (
