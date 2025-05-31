@@ -37,6 +37,8 @@ const ProjectDetailPage: React.FC = () => {
     }
   }, [id, projects, navigate, setCurrentProject]);
 
+  console.log(project);
+
   useEffect(() => {
     if (project) {
       const filtered = project.machines.filter((machine: any) =>

@@ -35,10 +35,17 @@ export const createMachine = async (projectId: string, machineData: MachineData)
 
     const savedMachine = await machine.save();
 
-    // Update project's machines array
+    // Update project with machine reference
     await Project.findByIdAndUpdate(
       projectId,
-      { $push: { machines: savedMachine._id } },
+      { 
+        $push: { 
+          machines: {
+            id: savedMachine._id,
+            name: savedMachine.name
+          }
+        }
+      },
       { new: true }
     );
 
