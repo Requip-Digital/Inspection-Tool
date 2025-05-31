@@ -1,8 +1,8 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Project, Machine, Template } from '../types';
 import { PROJECT_TEMPLATES } from '../data/projectTemplates';
 import { MACHINE_TEMPLATES } from '../data/machineTemplates';
-import { MOCK_PROJECTS } from '../data/mockData';
+import { projectService } from '../services/projectService';
 
 interface AppContextType {
   projects: Project[];
@@ -17,132 +17,184 @@ interface AppContextType {
   setCurrentProject: (project: Project | null) => void;
   setCurrentMachine: (machine: Machine | null) => void;
   setSearchTerm: (term: string) => void;
-  addProject: (project: Omit<Project, 'id'>) => void;
-  updateProject: (project: Project) => void;
-  deleteProject: (id: string) => void;
-  addMachine: (projectId: string, machine: Omit<Machine, 'id'>) => void;
-  updateMachine: (projectId: string, machine: Machine) => void;
-  deleteMachine: (projectId: string, machineId: string) => void;
+  addProject: (project: Omit<Project, 'id'>) => Promise<void>;
+  updateProject: (project: Project) => Promise<void>;
+  deleteProject: (id: string) => Promise<void>;
+  addMachine: (projectId: string, machine: Omit<Machine, 'id'>) => Promise<void>;
+  updateMachine: (projectId: string, machine: Machine) => Promise<void>;
+  deleteMachine: (projectId: string, machineId: string) => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
-export const useAppContext = () => {
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error('useAppContext must be used within an AppProvider');
-  }
-  return context;
-};
-
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [projects, setProjects] = useState<Project[]>(MOCK_PROJECTS);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [currentProject, setCurrentProject] = useState<Project | null>(null);
   const [currentMachine, setCurrentMachine] = useState<Machine | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isLoading] = useState(false);
-  const [error] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const addProject = (project: Omit<Project, 'id'>) => {
-    const newProject: Project = {
-      ...project,
-      id: Date.now().toString(),
-      machines: []
+  useEffect(() => {
+    const loadProjects = async () => {
+      setIsLoading(true);
+      try {
+        const loadedProjects = await projectService.getAllProjects();
+        setProjects(loadedProjects);
+      } catch (err) {
+        setError('Failed to load projects');
+        console.error('Error loading projects:', err);
+      } finally {
+        setIsLoading(false);
+      }
     };
-    setProjects((prev) => [...prev, newProject]);
+
+    loadProjects();
+  }, []);
+
+  const addProject = async (projectData: Omit<Project, 'id'>) => {
+    setIsLoading(true);
+    try {
+      const newProject = await projectService.createProject(projectData);
+      setProjects(prev => [...prev, newProject]);
+    } catch (err) {
+      setError('Failed to create project');
+      console.error('Error creating project:', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const updateProject = (project: Project) => {
-    setProjects((prev) =>
-      prev.map((p) => (p.id === project.id ? project : p))
-    );
-  };
-
-  const deleteProject = (id: string) => {
-    setProjects((prev) => prev.filter((p) => p.id !== id));
-  };
-
-  const addMachine = (projectId: string, machine: Omit<Machine, 'id'>) => {
-    const newMachine: Machine = {
-      ...machine,
-      id: Date.now().toString(),
-      name: machine.name || '',
-      sheetNumber: machine.sheetNumber || 0,
-      millMachineNo: machine.millMachineNo || '',
-      model: machine.model || '',
-      typeOfFabric: machine.typeOfFabric || '',
-      yearOfMfg: machine.yearOfMfg || new Date().getFullYear(),
-      photos: machine.photos || []
-    };
-    setProjects((prev) =>
-      prev.map((p) => {
-        if (p.id === projectId) {
-          return {
-            ...p,
-            machines: [...p.machines, newMachine]
-          };
+  const updateProject = async (project: Project) => {
+    setIsLoading(true);
+    try {
+      const updatedProject = await projectService.updateProject(project.id, project);
+      if (updatedProject) {
+        setProjects(prev => prev.map(p => p.id === project.id ? updatedProject : p));
+        if (currentProject?.id === project.id) {
+          setCurrentProject(updatedProject);
         }
-        return p;
-      })
-    );
+      }
+    } catch (err) {
+      setError('Failed to update project');
+      console.error('Error updating project:', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const updateMachine = (projectId: string, machine: Machine) => {
-    setProjects((prev) =>
-      prev.map((p) => {
-        if (p.id === projectId) {
-          return {
-            ...p,
-            machines: p.machines.map((m) =>
-              m.id === machine.id ? machine : m
-            )
-          };
+  const deleteProject = async (id: string) => {
+    setIsLoading(true);
+    try {
+      const success = await projectService.deleteProject(id);
+      if (success) {
+        setProjects(prev => prev.filter(p => p.id !== id));
+        if (currentProject?.id === id) {
+          setCurrentProject(null);
         }
-        return p;
-      })
-    );
+      }
+    } catch (err) {
+      setError('Failed to delete project');
+      console.error('Error deleting project:', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const deleteMachine = (projectId: string, machineId: string) => {
-    setProjects((prev) =>
-      prev.map((p) => {
-        if (p.id === projectId) {
-          return {
-            ...p,
-            machines: p.machines.filter((m) => m.id !== machineId)
-          };
+  const addMachine = async (projectId: string, machineData: Omit<Machine, 'id'>) => {
+    setIsLoading(true);
+    try {
+      const updatedProject = await projectService.addMachine(projectId, machineData);
+      if (updatedProject) {
+        setProjects(prev => prev.map(p => p.id === projectId ? updatedProject : p));
+        if (currentProject?.id === projectId) {
+          setCurrentProject(updatedProject);
         }
-        return p;
-      })
-    );
+      }
+    } catch (err) {
+      setError('Failed to add machine');
+      console.error('Error adding machine:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const updateMachine = async (projectId: string, machine: Machine) => {
+    setIsLoading(true);
+    try {
+      const updatedProject = await projectService.updateMachine(projectId, machine.id, machine);
+      if (updatedProject) {
+        setProjects(prev => prev.map(p => p.id === projectId ? updatedProject : p));
+        if (currentProject?.id === projectId) {
+          setCurrentProject(updatedProject);
+        }
+        if (currentMachine?.id === machine.id) {
+          setCurrentMachine(updatedProject.machines.find(m => m.id === machine.id) || null);
+        }
+      }
+    } catch (err) {
+      setError('Failed to update machine');
+      console.error('Error updating machine:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const deleteMachine = async (projectId: string, machineId: string) => {
+    setIsLoading(true);
+    try {
+      const updatedProject = await projectService.deleteMachine(projectId, machineId);
+      if (updatedProject) {
+        setProjects(prev => prev.map(p => p.id === projectId ? updatedProject : p));
+        if (currentProject?.id === projectId) {
+          setCurrentProject(updatedProject);
+        }
+        if (currentMachine?.id === machineId) {
+          setCurrentMachine(null);
+        }
+      }
+    } catch (err) {
+      setError('Failed to delete machine');
+      console.error('Error deleting machine:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const value = {
+    projects,
+    projectTemplates: PROJECT_TEMPLATES,
+    machineTemplates: MACHINE_TEMPLATES,
+    currentProject,
+    currentMachine,
+    searchTerm,
+    isLoading,
+    error,
+    setProjects,
+    setCurrentProject,
+    setCurrentMachine,
+    setSearchTerm,
+    addProject,
+    updateProject,
+    deleteProject,
+    addMachine,
+    updateMachine,
+    deleteMachine
   };
 
   return (
-    <AppContext.Provider
-      value={{
-        projects,
-        projectTemplates: PROJECT_TEMPLATES,
-        machineTemplates: MACHINE_TEMPLATES,
-        currentProject,
-        currentMachine,
-        searchTerm,
-        isLoading,
-        error,
-        setProjects,
-        setCurrentProject,
-        setCurrentMachine,
-        setSearchTerm,
-        addProject,
-        updateProject,
-        deleteProject,
-        addMachine,
-        updateMachine,
-        deleteMachine
-      }}
-    >
+    <AppContext.Provider value={value}>
       {children}
     </AppContext.Provider>
   );
+};
+
+export const useAppContext = () => {
+  const context = useContext(AppContext);
+  if (context === undefined) {
+    throw new Error('useAppContext must be used within an AppProvider');
+  }
+  return context;
 };
 
 export default AppContext;

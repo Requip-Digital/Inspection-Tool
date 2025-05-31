@@ -1,11 +1,20 @@
 export interface Project {
   id: string;
   name: string;
-  template: string;
-  inspectionDate: string;
-  city: string;
-  originallyBought: string;
-  mfgOrigin: string;
+  templateId: string;
+  details: {
+    inspectionDate?: string;
+    city: string;
+    originallyBought: 'New' | 'Used' | 'Refurbished';
+    mfgOrigin: string;
+    nearestAirport: string;
+    condition: 'Excellent' | 'Good' | 'Fair' | 'Poor';
+    millName?: string;
+    country?: string;
+    inspectedByDate?: string;
+    delivery?: string;
+    askingPrice?: string;
+  };
   machines: Machine[];
   imageUrl?: string;
 }

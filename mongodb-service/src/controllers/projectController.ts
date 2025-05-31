@@ -1,0 +1,105 @@
+import { Request, Response } from 'express';
+import Project, { IProject } from '../models/Project';
+
+export const projectController = {
+  // Get all projects
+  async getAllProjects(req: Request, res: Response) {
+    try {
+      const projects = await Project.find();
+      res.json(projects);
+    } catch (error) {
+      res.status(500).json({ message: 'Error fetching projects', error });
+    }
+  },
+
+  // Get a single project by ID
+  async getProjectById(req: Request, res: Response) {
+    try {
+      const project = await Project.findById(req.params.id);
+      if (!project) {
+        return res.status(404).json({ message: 'Project not found' });
+      }
+      res.json(project);
+    } catch (error) {
+      res.status(500).json({ message: 'Error fetching project', error });
+    }
+  },
+
+  // Create a new project
+  async createProject(req: Request, res: Response) {
+    try {
+      const projectData = {
+        name: req.body.name,
+        templateId: req.body.templateId,
+        details: {
+          inspectionDate: req.body.details?.inspectionDate,
+          city: req.body.details?.city,
+          originallyBought: req.body.details?.originallyBought,
+          mfgOrigin: req.body.details?.mfgOrigin,
+          nearestAirport: req.body.details?.nearestAirport,
+          condition: req.body.details?.condition,
+          millName: req.body.details?.millName,
+          country: req.body.details?.country,
+          inspectedByDate: req.body.details?.inspectedByDate,
+          delivery: req.body.details?.delivery,
+          askingPrice: req.body.details?.askingPrice
+        }
+      };
+
+      const project = new Project(projectData);
+      const savedProject = await project.save();
+      res.status(201).json(savedProject);
+    } catch (error) {
+      res.status(400).json({ message: 'Error creating project', error });
+    }
+  },
+
+  // Update a project
+  async updateProject(req: Request, res: Response) {
+    try {
+      const projectData = {
+        name: req.body.name,
+        templateId: req.body.templateId,
+        details: {
+          inspectionDate: req.body.details?.inspectionDate,
+          city: req.body.details?.city,
+          originallyBought: req.body.details?.originallyBought,
+          mfgOrigin: req.body.details?.mfgOrigin,
+          nearestAirport: req.body.details?.nearestAirport,
+          condition: req.body.details?.condition,
+          millName: req.body.details?.millName,
+          country: req.body.details?.country,
+          inspectedByDate: req.body.details?.inspectedByDate,
+          delivery: req.body.details?.delivery,
+          askingPrice: req.body.details?.askingPrice
+        }
+      };
+
+      const project = await Project.findByIdAndUpdate(
+        req.params.id,
+        projectData,
+        { new: true, runValidators: true }
+      );
+      
+      if (!project) {
+        return res.status(404).json({ message: 'Project not found' });
+      }
+      res.json(project);
+    } catch (error) {
+      res.status(400).json({ message: 'Error updating project', error });
+    }
+  },
+
+  // Delete a project
+  async deleteProject(req: Request, res: Response) {
+    try {
+      const project = await Project.findByIdAndDelete(req.params.id);
+      if (!project) {
+        return res.status(404).json({ message: 'Project not found' });
+      }
+      res.json({ message: 'Project deleted successfully' });
+    } catch (error) {
+      res.status(500).json({ message: 'Error deleting project', error });
+    }
+  }
+}; 

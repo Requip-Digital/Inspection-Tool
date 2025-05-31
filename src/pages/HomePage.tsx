@@ -17,11 +17,10 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     const filtered = projects.filter((project) => {
       const matchesSearch =
-        project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        project.city.toLowerCase().includes(searchTerm.toLowerCase());
+        project.name.toLowerCase().includes(searchTerm.toLowerCase())
   
       const matchesTemplate = selectedTemplate
-        ? project.template === selectedTemplate
+        ? project.templateId === selectedTemplate
         : true;
   
       return matchesSearch && matchesTemplate;

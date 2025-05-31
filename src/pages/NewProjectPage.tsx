@@ -98,11 +98,20 @@ const NewProjectPage: React.FC = () => {
       
       const projectData = {
         name: projectName,
-        template: formData.template,
-        inspectionDate: formData.template === 'Toyota' ? (formData as ToyotaFormData).inspectionDate : '',
-        city: formData.city,
-        originallyBought: formData.originallyBought,
-        mfgOrigin: formData.mfgOrigin,
+        templateId: formData.template,
+        details: {
+          inspectionDate: formData.template === 'Toyota' ? (formData as ToyotaFormData).inspectionDate : undefined,
+          city: formData.city,
+          originallyBought: formData.originallyBought as 'New' | 'Used' | 'Refurbished',
+          mfgOrigin: formData.mfgOrigin,
+          nearestAirport: formData.nearestAirport,
+          condition: formData.condition as 'Excellent' | 'Good' | 'Fair' | 'Poor',
+          millName: formData.template === 'Picanol' ? (formData as PicanalFormData).millName : undefined,
+          country: formData.template === 'Picanol' ? (formData as PicanalFormData).country : undefined,
+          inspectedByDate: formData.template === 'Picanol' ? (formData as PicanalFormData).inspectedByDate : undefined,
+          delivery: formData.template === 'Picanol' ? (formData as PicanalFormData).delivery : undefined,
+          askingPrice: formData.template === 'Picanol' ? (formData as PicanalFormData).askingPrice : undefined
+        },
         machines: []
       };
       
