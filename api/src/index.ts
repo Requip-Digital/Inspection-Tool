@@ -8,11 +8,12 @@ import machineRoutes from './routes/machineRoutes';
 dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 5001;
 
 // Middleware
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://requip-chi.vercel.app', 'https://www.requip-chi.vercel.app'] 
+    ? ['https://requip-phi.vercel.app', 'https://www.requip-phi.vercel.app'] 
     : 'http://localhost:5173',
   credentials: true
 }));
@@ -25,14 +26,10 @@ if (!MONGODB_URI) {
   throw new Error('Please define the MONGODB_URI environment variable');
 }
 
-// Connect to MongoDB only when a request comes in
-const connectDB = async () => {
-  if (mongoose.connections[0].readyState) return;
-  await mongoose
-    .connect(MONGODB_URI)
-    .then(() => console.log('Connected to MongoDB'))
-    .catch((error) => console.error('MongoDB connection error:', error));
-};
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch((error) => console.error('MongoDB connection error:', error));
 
 // Routes
 app.use('/api/projects', projectRoutes);
@@ -43,10 +40,7 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'MongoDB service is running' });
 });
 
-// Handler for Vercel
-const handler = async (req: any, res: any) => {
-  await connectDB();
-  return app(req, res);
-};
-
-export default handler; 
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+}); 
