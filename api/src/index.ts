@@ -8,7 +8,6 @@ import machineRoutes from './routes/machineRoutes';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5001;
 
 // Middleware
 app.use(cors({
@@ -26,10 +25,14 @@ if (!MONGODB_URI) {
   throw new Error('Please define the MONGODB_URI environment variable');
 }
 
-mongoose
-  .connect(MONGODB_URI)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((error) => console.error('MongoDB connection error:', error));
+// Connect to MongoDB only when a request comes in
+const connectDB = async () => {
+  if (mongoose.connections[0].readyState) return;
+  await mongoose
+    .connect(MONGODB_URI)
+    .then(() => console.log('Connected to MongoDB'))
+    .catch((error) => console.error('MongoDB connection error:', error));
+};
 
 // Routes
 app.use('/api/projects', projectRoutes);
@@ -40,4 +43,10 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'MongoDB service is running' });
 });
 
-export default app; 
+// Handler for Vercel
+const handler = async (req: any, res: any) => {
+  await connectDB();
+  return app(req, res);
+};
+
+export default handler; 
