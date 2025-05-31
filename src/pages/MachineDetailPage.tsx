@@ -4,7 +4,7 @@ import { useAppContext } from '../context/AppContext';
 import Header from '../components/Header';
 import TabNavigation from '../components/TabNavigation';
 import FormField from '../components/FormField';
-import { Camera } from 'lucide-react';
+import { Camera, Lock, Unlock } from 'lucide-react';
 
 const MachineDetailPage: React.FC = () => {
   const { projectId, machineId } = useParams<{ projectId: string; machineId: string }>();
@@ -17,6 +17,7 @@ const MachineDetailPage: React.FC = () => {
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState('');
+  const [isReadOnly, setIsReadOnly] = useState(true);
 
   useEffect(() => {
     if (projectId && machineId && projects.length > 0) {
@@ -48,6 +49,8 @@ const MachineDetailPage: React.FC = () => {
   };
 
   const handleFieldChange = (name: string, value: any) => {
+    if (isReadOnly) return;
+    
     setFormData({
       ...formData,
       [name]: value
@@ -61,7 +64,7 @@ const MachineDetailPage: React.FC = () => {
   };
 
   const handleAutoSave = (data: Record<string, any>) => {
-    if (projectId && machineId) {
+    if (projectId && machineId && !isReadOnly) {
       setIsSaving(true);
       setSaveMessage('Saving...');
       
@@ -79,7 +82,7 @@ const MachineDetailPage: React.FC = () => {
         setTimeout(() => {
           setSaveMessage('');
         }, 2000);
-      }, 500);
+      }, 2000);
     }
   };
 
@@ -99,7 +102,29 @@ const MachineDetailPage: React.FC = () => {
       <Header />
       
       <main className="flex-1 container mx-auto px-4 py-6 max-w-lg">
-        <h2 className="text-2xl font-bold mb-4">{machine.name}</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold">{machine.name}</h2>
+          <button
+            onClick={() => setIsReadOnly(!isReadOnly)}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors ${
+              isReadOnly 
+                ? 'bg-gray-100 text-gray-600 hover:bg-gray-200' 
+                : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+            }`}
+          >
+            {isReadOnly ? (
+              <>
+                <Lock size={18} />
+                <span>Read Only</span>
+              </>
+            ) : (
+              <>
+                <Unlock size={18} />
+                <span>Editing</span>
+              </>
+            )}
+          </button>
+        </div>
         
         <TabNavigation 
           tabs={tabs} 
@@ -115,6 +140,7 @@ const MachineDetailPage: React.FC = () => {
                 field={field}
                 value={formData[field.name]}
                 onChange={handleFieldChange}
+                readOnly={isReadOnly}
               />
             ))
           ) : (
@@ -122,7 +148,7 @@ const MachineDetailPage: React.FC = () => {
           )}
         </div>
         
-        {saveMessage && (
+        {saveMessage && !isReadOnly && (
           <div className="fixed bottom-20 left-0 right-0 flex justify-center">
             <div className={`px-4 py-2 rounded-full ${
               isSaving ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'
