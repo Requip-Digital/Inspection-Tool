@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 5001;
 // Middleware
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://requip.vercel.app', 'https://www.requip.vercel.app'] 
+    ? ['https://requip-chi.vercel.app', 'https://www.requip-chi.vercel.app'] 
     : 'http://localhost:5173',
   credentials: true
 }));
