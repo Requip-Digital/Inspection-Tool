@@ -1,3 +1,4 @@
+import Machine from '../models/Machine';
 import Project, { IProject } from '../models/Project';
 
 export const projectService = {
@@ -60,6 +61,11 @@ export const projectService = {
 
   // Delete a project
   async deleteProject(id: string): Promise<IProject | null> {
+    const project = await Project.findById(id);
+    if (!project) {
+      throw new Error('Project not found');
+    }
+    await Machine.deleteMany({ projectId: project._id });
     return await Project.findByIdAndDelete(id);
   },
 }; 

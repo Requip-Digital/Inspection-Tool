@@ -29,7 +29,6 @@ export const machineService = {
   },
 
   async updateMachine(machineId: string, machineData: Partial<MachineType>): Promise<ProjectType | null> {
-    console.log('machineData', machineData);
     const response = await fetch(`${API_URL}/machines/${machineId}`, {
       method: 'PUT',
       headers: {
@@ -44,7 +43,7 @@ export const machineService = {
     return response.json();
   },
 
-  async deleteMachine(projectId: string, machineId: string): Promise<ProjectType | null> {
+  async deleteMachine(machineId: string): Promise<ProjectType | null> {
     const response = await fetch(`${API_URL}/machines/${machineId}`, {
       method: 'DELETE',
     });

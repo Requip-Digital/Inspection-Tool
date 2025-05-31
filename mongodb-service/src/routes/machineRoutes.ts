@@ -3,7 +3,8 @@ import {
   createMachineController,
   updateMachineController,
   getMachineController,
-  getMachinesByProjectController
+  getMachinesByProjectController,
+  deleteMachineController
 } from '../controllers/machineController';
 
 const router = express.Router();
@@ -19,5 +20,8 @@ router.get('/:machineId', getMachineController);
 
 // Get all machines for a project
 router.get('/project/:projectId', getMachinesByProjectController);
+
+// Delete a machine
+router.delete('/:machineId', deleteMachineController);
 
 export default router; 

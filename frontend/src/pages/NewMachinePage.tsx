@@ -127,8 +127,6 @@ const NewMachinePage: React.FC = () => {
           projectId // Add projectId to match schema requirement
         };
         await addMachine(projectId, machineData);
-
-        console.log('machineData', machineData);
         
         navigate(`/project/${projectId}`);
       } catch (error) {

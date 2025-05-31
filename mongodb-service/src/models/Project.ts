@@ -17,6 +17,7 @@ export interface IProject extends Document {
   name: string;
   templateId: string;
   details: IProjectDetails;
+  machines: Array<{ id: string; name: string }>;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -46,7 +47,10 @@ const ProjectSchema = new Schema({
   name: { type: String, required: true },
   templateId: { type: String, required: true },
   details: { type: ProjectDetailsSchema, required: true },
-  machines: { type: [], required: true }
+  machines: [{
+    id: { type: Schema.Types.ObjectId, ref: 'Machine' },
+    name: { type: String }
+  }]
 }, { timestamps: true });
 
 export default mongoose.model<IProject>('Project', ProjectSchema); 

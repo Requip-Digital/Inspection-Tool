@@ -235,7 +235,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const deleteMachine = async (projectId: string, machineId: string) => {
     setIsLoading(true);
     try {
-      const updatedProject = await machineService.deleteMachine(projectId, machineId);
+      const updatedProject = await machineService.deleteMachine(machineId);
       if (updatedProject) {
         setProjects(prev => prev.map(p => p._id === projectId ? updatedProject : p));
         if (currentProject?._id === projectId) {

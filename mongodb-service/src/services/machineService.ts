@@ -1,6 +1,7 @@
 import Machine, { IMachine } from '../models/Machine';
 import Project from '../models/Project';
 import { Template, Section, Field } from '../types';
+import mongoose from 'mongoose';
 
 interface MachineData {
   name: string;
@@ -113,6 +114,32 @@ export const getMachine = async (machineId: string): Promise<IMachine | null> =>
 export const getMachinesByProject = async (projectId: string): Promise<IMachine[]> => {
   try {
     return await Machine.find({ projectId });
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteMachine = async (machineId: string): Promise<void> => {
+  try {
+    const machine = await Machine.findById(machineId);
+    if (!machine) {
+      throw new Error('Machine not found');
+    }
+
+    // Remove machine reference from project using the proper schema structure
+    await Project.findByIdAndUpdate(
+      machine.projectId,
+      { 
+        $pull: { 
+          machines: {
+            id: new mongoose.Types.ObjectId(machineId)
+          }
+        }
+      }
+    );
+
+    // Delete the machine
+    await Machine.findByIdAndDelete(machineId);
   } catch (error) {
     throw error;
   }

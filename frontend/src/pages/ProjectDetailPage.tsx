@@ -4,7 +4,7 @@ import { useAppContext } from '../context/AppContext';
 import Header from '../components/Header';
 import SearchBar from '../components/SearchBar';
 import AddButton from '../components/AddButton';
-import { FileText, ChevronRight, Download, Loader2 } from 'lucide-react';
+import { FileText, ChevronRight, Download, Loader2, Trash2 } from 'lucide-react';
 
 const formatDate = (dateString: string | undefined) => {
   if (!dateString) return 'N/A';
@@ -19,10 +19,11 @@ const formatDate = (dateString: string | undefined) => {
 const ProjectDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { projects, setCurrentProject, isLoading } = useAppContext();
+  const { projects, setCurrentProject, isLoading, deleteProject } = useAppContext();
   const [project, setProject] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredMachines, setFilteredMachines] = useState<any[]>([]);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (id && projects.length > 0) {
@@ -54,6 +55,25 @@ const ProjectDetailPage: React.FC = () => {
     navigate(`/project/${id}/machine/${machineId}`);
   };
 
+  const handleDelete = async () => {
+    if (!id) return;
+    
+    const confirmDelete = window.confirm('Are you sure you want to delete this project and all its machines? This action cannot be undone.');
+    if (!confirmDelete) return;
+    
+    setIsDeleting(true);
+    
+    try {
+      await deleteProject(id);
+      navigate('/');
+    } catch (error) {
+      console.error('Failed to delete project:', error);
+      alert('Failed to delete project. Please try again.');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   if (isLoading || !project) {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -82,7 +102,16 @@ const ProjectDetailPage: React.FC = () => {
       <Header />
 
       <main className="flex-1 container mx-auto px-4 py-6 max-w-lg">
-        <h2 className="text-2xl font-bold mb-4">{project.name}</h2>
+        <div className="flex justify-between mb-4">
+          <h2 className="text-2xl font-bold">{project.name}</h2>
+          <button
+            className="flex items-center gap-2 px-3 py-1.5 border border-blue-300 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+            onClick={() => {/* Export function would go here */}}
+          >
+            <Download size={16} className="" />
+            Export
+          </button>
+        </div>
 
         <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
           {/* Common fields for all templates */}
@@ -145,17 +174,31 @@ const ProjectDetailPage: React.FC = () => {
               ))}
             </div>
           )}
+          
         </div>
 
-        <div className="flex justify-center mb-4">
-          <button
-            className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors"
-            onClick={() => {/* Export function would go here */}}
+
+        <button
+            onClick={handleDelete}
+            disabled={isDeleting}
+            className={`w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+              isDeleting
+                ? 'bg-red-100 text-red-400 cursor-not-allowed'
+                : 'bg-red-600 text-white hover:bg-red-700'
+            }`}
           >
-            <Download size={18} className="mr-2" />
-            Export as PDF
+            {isDeleting ? (
+              <>
+                <Loader2 size={16} className="animate-spin" />
+                <span>Deleting...</span>
+              </>
+            ) : (
+              <>
+                <Trash2 size={16} />
+                <span>Delete Project</span>
+              </>
+            )}
           </button>
-        </div>
 
         <AddButton label="Add Machine" onClick={handleAddMachine} />
       </main>

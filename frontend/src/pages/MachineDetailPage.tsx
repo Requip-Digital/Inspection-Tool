@@ -4,7 +4,7 @@ import { useAppContext } from '../context/AppContext';
 import Header from '../components/Header';
 import TabNavigation from '../components/TabNavigation';
 import FormField from '../components/FormField';
-import { Eye, Pencil, Save, Loader2 } from 'lucide-react';
+import { Eye, Pencil, Save, Loader2, Trash2 } from 'lucide-react';
 import { Project, Machine, Template, Section, Field } from '../types';
 import { machineService } from '../services/machineService';
 
@@ -23,6 +23,7 @@ const MachineDetailPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Helper function to extract field values from sections
   const extractFieldValues = useCallback((machine: Machine) => {
@@ -129,9 +130,6 @@ const MachineDetailPage: React.FC = () => {
         sheetNumber: formData.sheetNumber || machine.sheetNumber
       };
 
-      // console.log('updateData', updateData);
-      console.log('formData', formData);
-
       // Update the machine
       await updateMachine(projectId, updateData);
       
@@ -167,6 +165,25 @@ const MachineDetailPage: React.FC = () => {
     
     setFormData(newData);
     setHasUnsavedChanges(true);
+  };
+
+  const handleDelete = async () => {
+    if (!machineId || !projectId) return;
+    
+    const confirmDelete = window.confirm('Are you sure you want to delete this machine? This action cannot be undone.');
+    if (!confirmDelete) return;
+    
+    setIsDeleting(true);
+    
+    try {
+      await machineService.deleteMachine(machineId);
+      navigate(`/project/${projectId}`);
+    } catch (error) {
+      console.error('Failed to delete machine:', error);
+      alert('Failed to delete machine. Please try again.');
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   if (isLoading) {
@@ -234,7 +251,7 @@ const MachineDetailPage: React.FC = () => {
           <div className="flex gap-2">
             <button
               onClick={() => setIsReadOnly(!isReadOnly)}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors ${
+              className={`flex border border-blue-300 items-center gap-2 px-3 py-1.5 rounded-lg transition-colors ${
                 isReadOnly 
                   ? 'bg-gray-100 text-gray-600 hover:bg-gray-200' 
                   : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
@@ -308,6 +325,30 @@ const MachineDetailPage: React.FC = () => {
           ) : (
             <p className="text-gray-500 py-4 text-center">No fields in this section</p>
           )}
+        </div>
+
+        <div className="mt-8 border-t pt-6">
+          <button
+            onClick={handleDelete}
+            disabled={isDeleting}
+            className={`w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+              isDeleting
+                ? 'bg-red-100 text-red-400 cursor-not-allowed'
+                : 'bg-red-600 text-white hover:bg-red-700'
+            }`}
+          >
+            {isDeleting ? (
+              <>
+                <Loader2 size={16} className="animate-spin" />
+                <span>Deleting...</span>
+              </>
+            ) : (
+              <>
+                <Trash2 size={16} />
+                <span>Delete Machine</span>
+              </>
+            )}
+          </button>
         </div>
       </main>
     </div>

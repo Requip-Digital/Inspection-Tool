@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createMachine, updateMachine, getMachine, getMachinesByProject } from '../services/machineService';
+import { createMachine, updateMachine, getMachine, getMachinesByProject, deleteMachine } from '../services/machineService';
 
 export const createMachineController = async (req: Request, res: Response) => {
   try {
@@ -46,3 +46,13 @@ export const getMachinesByProjectController = async (req: Request, res: Response
     res.status(400).json({ message: error?.message || 'Failed to get machines' });
   }
 }; 
+
+export const deleteMachineController = async (req: Request, res: Response) => {
+  try {
+    const { machineId } = req.params;
+    await deleteMachine(machineId);
+    res.json({ message: 'Machine deleted successfully' });
+  } catch (error: any) {
+    res.status(400).json({ message: error?.message || 'Failed to delete machine' });
+  }
+};
