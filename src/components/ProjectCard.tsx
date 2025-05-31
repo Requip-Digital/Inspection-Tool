@@ -6,11 +6,21 @@ interface ProjectCardProps {
   project: Project;
 }
 
+const formatDate = (dateString: string | undefined) => {
+  if (!dateString) return 'N/A';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric'
+  });
+};
+
 const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/project/${project.id}`);
+    navigate(`/project/${project._id}`);
   };
 
   return (
@@ -20,9 +30,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
     >
       <div className="flex">
         <div className="flex-1 p-4">
-          <p className="text-gray-500 text-sm">Inspection Date: {project.inspectionDate}</p>
+          <p className="text-gray-500 text-sm">Inspection Date: {formatDate(project.details.inspectionDate)}</p>
           <h3 className="text-lg font-semibold mt-1">{project.name}</h3>
-          <p className="text-gray-600">City: {project.city}</p>
+          <p className="text-gray-600">City: {project.details.city}</p>
         </div>
         
         <div className="w-32 relative flex items-center">

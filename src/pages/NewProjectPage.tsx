@@ -97,6 +97,7 @@ const NewProjectPage: React.FC = () => {
         `${formData.template} Project ${Math.floor(Math.random() * 1000)}`;
       
       const projectData = {
+        _id: '',
         name: projectName,
         templateId: formData.template,
         details: {

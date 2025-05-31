@@ -47,7 +47,8 @@ const ProjectDetailsSchema = new Schema({
 const ProjectSchema = new Schema({
   name: { type: String, required: true },
   templateId: { type: String, required: true },
-  details: { type: ProjectDetailsSchema, required: true }
+  details: { type: ProjectDetailsSchema, required: true },
+  machines: { type: [], required: true }
 }, { timestamps: true });
 
 export default mongoose.model<IProject>('Project', ProjectSchema); 

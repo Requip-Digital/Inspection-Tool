@@ -6,6 +6,16 @@ import SearchBar from '../components/SearchBar';
 import AddButton from '../components/AddButton';
 import { FileText, ChevronRight, Download } from 'lucide-react';
 
+const formatDate = (dateString: string | undefined) => {
+  if (!dateString) return 'N/A';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+};
+
 const ProjectDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -16,7 +26,7 @@ const ProjectDetailPage: React.FC = () => {
 
   useEffect(() => {
     if (id && projects.length > 0) {
-      const foundProject = projects.find((p) => p.id === id);
+      const foundProject = projects.find((p) => p._id === id);
       if (foundProject) {
         setProject(foundProject);
         setCurrentProject(foundProject);
@@ -59,28 +69,28 @@ const ProjectDetailPage: React.FC = () => {
           <div className="border-b pb-2 mb-2">
             <div className="flex justify-between py-2">
               <span className="text-gray-600">Inspection Date</span>
-              <span className="font-medium">{project.inspectionDate}</span>
+              <span className="font-medium">{formatDate(project.details.inspectionDate)}</span>
             </div>
           </div>
 
           <div className="border-b pb-2 mb-2">
             <div className="flex justify-between py-2">
               <span className="text-gray-600">City</span>
-              <span className="font-medium">{project.city}</span>
+              <span className="font-medium">{project.details.city}</span>
             </div>
           </div>
 
           <div className="border-b pb-2 mb-2">
             <div className="flex justify-between py-2">
               <span className="text-gray-600">Originally Bought</span>
-              <span className="font-medium">{project.originallyBought || 'N/A'}</span>
+              <span className="font-medium">{project.details.originallyBought || 'N/A'}</span>
             </div>
           </div>
 
           <div>
             <div className="flex justify-between py-2">
               <span className="text-gray-600">Mfg. Origin</span>
-              <span className="font-medium">{project.mfgOrigin || 'N/A'}</span>
+              <span className="font-medium">{project.details.mfgOrigin || 'N/A'}</span>
             </div>
           </div>
         </div>

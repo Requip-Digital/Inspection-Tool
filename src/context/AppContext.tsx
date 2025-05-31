@@ -68,10 +68,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const updateProject = async (project: Project) => {
     setIsLoading(true);
     try {
-      const updatedProject = await projectService.updateProject(project.id, project);
+      const updatedProject = await projectService.updateProject(project._id, project);
       if (updatedProject) {
-        setProjects(prev => prev.map(p => p.id === project.id ? updatedProject : p));
-        if (currentProject?.id === project.id) {
+        setProjects(prev => prev.map(p => p._id === project._id ? updatedProject : p));
+        if (currentProject?._id === project._id) {
           setCurrentProject(updatedProject);
         }
       }
@@ -88,8 +88,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const success = await projectService.deleteProject(id);
       if (success) {
-        setProjects(prev => prev.filter(p => p.id !== id));
-        if (currentProject?.id === id) {
+        setProjects(prev => prev.filter(p => p._id !== id));
+        if (currentProject?._id === id) {
           setCurrentProject(null);
         }
       }
@@ -106,8 +106,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const updatedProject = await projectService.addMachine(projectId, machineData);
       if (updatedProject) {
-        setProjects(prev => prev.map(p => p.id === projectId ? updatedProject : p));
-        if (currentProject?.id === projectId) {
+        setProjects(prev => prev.map(p => p._id === projectId ? updatedProject : p));
+        if (currentProject?._id === projectId) {
           setCurrentProject(updatedProject);
         }
       }
@@ -122,14 +122,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const updateMachine = async (projectId: string, machine: Machine) => {
     setIsLoading(true);
     try {
-      const updatedProject = await projectService.updateMachine(projectId, machine.id, machine);
+      const updatedProject = await projectService.updateMachine(projectId, machine._id, machine);
       if (updatedProject) {
-        setProjects(prev => prev.map(p => p.id === projectId ? updatedProject : p));
-        if (currentProject?.id === projectId) {
+        setProjects(prev => prev.map(p => p._id === projectId ? updatedProject : p));
+        if (currentProject?._id === projectId) {
           setCurrentProject(updatedProject);
         }
-        if (currentMachine?.id === machine.id) {
-          setCurrentMachine(updatedProject.machines.find(m => m.id === machine.id) || null);
+        if (currentMachine?._id === machine._id) {
+          setCurrentMachine(updatedProject.machines.find(m => m._id === machine._id) || null);
         }
       }
     } catch (err) {
@@ -145,11 +145,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const updatedProject = await projectService.deleteMachine(projectId, machineId);
       if (updatedProject) {
-        setProjects(prev => prev.map(p => p.id === projectId ? updatedProject : p));
-        if (currentProject?.id === projectId) {
+        setProjects(prev => prev.map(p => p._id === projectId ? updatedProject : p));
+        if (currentProject?._id === projectId) {
           setCurrentProject(updatedProject);
         }
-        if (currentMachine?.id === machineId) {
+        if (currentMachine?._id === machineId) {
           setCurrentMachine(null);
         }
       }

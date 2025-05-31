@@ -29,7 +29,6 @@ const HomePage: React.FC = () => {
     setFilteredProjects(filtered);
   }, [projects, searchTerm, selectedTemplate]);
   
-
   const handleAddProject = () => {
     navigate('/project/new');
   };
@@ -96,7 +95,7 @@ const HomePage: React.FC = () => {
         ) : (
           <div className="space-y-4">
             {filteredProjects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
+              <ProjectCard key={project._id} project={project} />
             ))}
           </div>
         )}
