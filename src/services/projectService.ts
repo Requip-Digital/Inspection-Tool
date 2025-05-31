@@ -1,6 +1,7 @@
 import { Project as ProjectType } from '../types';
+import { config } from '../config';
 
-const API_URL = 'http://localhost:5001/api';
+const API_URL = config.apiUrl;
 
 export const projectService = {
   async getAllProjects(): Promise<ProjectType[]> {

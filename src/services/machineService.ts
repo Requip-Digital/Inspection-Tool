@@ -1,6 +1,7 @@
 import { Project as ProjectType, Machine as MachineType } from '../types';
+import { config } from '../config';
 
-const API_URL = 'http://localhost:5001/api';
+const API_URL = config.apiUrl;
 
 export const machineService = {
   async getMachine(machineId: string): Promise<MachineType | null> {

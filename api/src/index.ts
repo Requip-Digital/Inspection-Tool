@@ -8,10 +8,15 @@ import machineRoutes from './routes/machineRoutes';
 dotenv.config();
 
 const app = express();
-const PORT = 5001;
+const PORT = process.env.PORT || 5001;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://requip.vercel.app', 'https://www.requip.vercel.app'] 
+    : 'http://localhost:5173',
+  credentials: true
+}));
 app.use(express.json());
 
 // MongoDB Connection
