@@ -2,16 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import Header from '../components/Header';
+import { MACHINE_TEMPLATES } from '../data/machineTemplates';
+
+// Create empty sections structure
+const DEFAULT_SECTIONS = [
+  {
+    id: 'general',
+    name: 'General',
+    fields: []
+  }
+];
 
 const DEFAULT_MACHINE = {
-  id: '',
   name: '',
   sheetNumber: 0,
-  millMachineNo: '',
-  model: '',
-  typeOfFabric: '',
-  yearOfMfg: new Date().getFullYear(),
-  photos: []
+  template: 'Toyota',
+  sections: DEFAULT_SECTIONS
 };
 
 const NewMachinePage: React.FC = () => {
@@ -20,14 +26,16 @@ const NewMachinePage: React.FC = () => {
   const { projects, addMachine } = useAppContext();
   const [formData, setFormData] = useState({
     name: '',
-    sheetNumber: 1
+    sheetNumber: 1,
+    template: 'Toyota',
+    sections: MACHINE_TEMPLATES?.[0]?.sections || DEFAULT_SECTIONS
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [selectedMachineId, setSelectedMachineId] = useState('');
 
   useEffect(() => {
     if (projectId && projects.length > 0) {
-      const project = projects.find((p) => p.id === projectId);
+      const project = projects.find((p) => p._id === projectId);
       if (project) {
         // Auto-increment sheet number
         const nextSheetNumber = project.machines.length + 1;
@@ -63,16 +71,15 @@ const NewMachinePage: React.FC = () => {
     setSelectedMachineId(machineId);
 
     if (machineId && projectId) {
-      const project = projects.find((p) => p.id === projectId);
+      const project = projects.find((p) => p._id === projectId);
       if (project) {
-        const selectedMachine = project.machines.find((m) => m.id === machineId);
+        const selectedMachine = project.machines.find((m) => m._id === machineId);
         if (selectedMachine) {
-          // Copy all fields except id, name and sheet number
-          const { id, name, sheetNumber, ...machineData } = selectedMachine;
+          // Keep the current name and sheet number, but copy the template and sections
           setFormData((prev) => ({
-            ...machineData,
-            name: prev.name,
-            sheetNumber: prev.sheetNumber
+            ...prev,
+            template: selectedMachine.template || 'Toyota',
+            sections: selectedMachine.sections || DEFAULT_SECTIONS
           }));
         }
       }
@@ -95,8 +102,8 @@ const NewMachinePage: React.FC = () => {
     
     if (validateForm() && projectId) {
       addMachine(projectId, {
-        ...DEFAULT_MACHINE,
-        ...formData
+        ...formData,
+        projectId // Add projectId to match schema requirement
       });
       
       navigate(`/project/${projectId}`);
@@ -104,7 +111,7 @@ const NewMachinePage: React.FC = () => {
   };
 
   // Get current project and its machines
-  const currentProject = projectId ? projects.find((p) => p.id === projectId) : null;
+  const currentProject = projectId ? projects.find((p) => p._id === projectId) : null;
   const existingMachines = currentProject?.machines || [];
 
   return (

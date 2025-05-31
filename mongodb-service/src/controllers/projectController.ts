@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import Project, { IProject } from '../models/Project';
+import { projectService } from '../services/projectService';
 
 export const projectController = {
   // Get all projects
   async getAllProjects(req: Request, res: Response) {
     try {
-      const projects = await Project.find();
+      const projects = await projectService.getAllProjects();
       res.json(projects);
     } catch (error) {
       res.status(500).json({ message: 'Error fetching projects', error });
@@ -15,7 +15,7 @@ export const projectController = {
   // Get a single project by ID
   async getProjectById(req: Request, res: Response) {
     try {
-      const project = await Project.findById(req.params.id);
+      const project = await projectService.getProjectById(req.params.id);
       if (!project) {
         return res.status(404).json({ message: 'Project not found' });
       }
@@ -46,8 +46,7 @@ export const projectController = {
         }
       };
 
-      const project = new Project(projectData);
-      const savedProject = await project.save();
+      const savedProject = await projectService.createProject(projectData);
       res.status(201).json(savedProject);
     } catch (error) {
       res.status(400).json({ message: 'Error creating project', error });
@@ -75,11 +74,7 @@ export const projectController = {
         }
       };
 
-      const project = await Project.findByIdAndUpdate(
-        req.params.id,
-        projectData,
-        { new: true, runValidators: true }
-      );
+      const project = await projectService.updateProject(req.params.id, projectData);
       
       if (!project) {
         return res.status(404).json({ message: 'Project not found' });
@@ -93,7 +88,7 @@ export const projectController = {
   // Delete a project
   async deleteProject(req: Request, res: Response) {
     try {
-      const project = await Project.findByIdAndDelete(req.params.id);
+      const project = await projectService.deleteProject(req.params.id);
       if (!project) {
         return res.status(404).json({ message: 'Project not found' });
       }

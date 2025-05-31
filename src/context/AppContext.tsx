@@ -3,6 +3,37 @@ import { Project, Machine, Template } from '../types';
 import { PROJECT_TEMPLATES } from '../data/projectTemplates';
 import { MACHINE_TEMPLATES } from '../data/machineTemplates';
 import { projectService } from '../services/projectService';
+import { machineService } from '../services/machineService';
+
+interface IMachine {
+  _id: string;
+  name: string;
+  sheetNumber: number;
+  template: string;
+  sections: {
+    id: string;
+    name: string;
+    fields: Array<{
+      id: string;
+      name: string;
+      type: string;
+      label: string;
+      value: any;
+      options?: any[];
+      validation?: {
+        min?: number;
+        max?: number;
+        message?: string;
+      };
+      required?: boolean;
+    }>;
+  }[];
+  millMachineNo?: string;
+  model?: string;
+  typeOfFabric?: string;
+  yearOfMfg?: number;
+  photos?: string[];
+}
 
 interface AppContextType {
   projects: Project[];
@@ -104,11 +135,39 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const addMachine = async (projectId: string, machineData: Omit<Machine, 'id'>) => {
     setIsLoading(true);
     try {
-      const updatedProject = await projectService.addMachine(projectId, machineData);
-      if (updatedProject) {
-        setProjects(prev => prev.map(p => p._id === projectId ? updatedProject : p));
+      const response = await machineService.addMachine(projectId, machineData) as unknown as IMachine;
+      if (response) {
+        const newMachine: Machine = {
+          id: response._id,
+          name: response.name,
+          sheetNumber: response.sheetNumber,
+          template: response.template,
+          sections: response.sections,
+          millMachineNo: response.millMachineNo,
+          model: response.model,
+          typeOfFabric: response.typeOfFabric,
+          yearOfMfg: response.yearOfMfg,
+          photos: response.photos
+        };
+
+        setProjects(prev => prev.map(p => {
+          if (p._id === projectId) {
+            return {
+              ...p,
+              machines: [...(p.machines || []), newMachine]
+            };
+          }
+          return p;
+        }));
+        
         if (currentProject?._id === projectId) {
-          setCurrentProject(updatedProject);
+          setCurrentProject(prev => {
+            if (!prev) return null;
+            return {
+              ...prev,
+              machines: [...(prev.machines || []), newMachine]
+            };
+          });
         }
       }
     } catch (err) {
@@ -122,14 +181,47 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const updateMachine = async (projectId: string, machine: Machine) => {
     setIsLoading(true);
     try {
-      const updatedProject = await projectService.updateMachine(projectId, machine._id, machine);
-      if (updatedProject) {
-        setProjects(prev => prev.map(p => p._id === projectId ? updatedProject : p));
+      const response = await machineService.updateMachine(machine.id, machine) as unknown as IMachine;
+      if (response) {
+        const updatedMachine: Machine = {
+          id: response._id,
+          name: response.name,
+          sheetNumber: response.sheetNumber,
+          template: response.template,
+          sections: response.sections,
+          millMachineNo: response.millMachineNo,
+          model: response.model,
+          typeOfFabric: response.typeOfFabric,
+          yearOfMfg: response.yearOfMfg,
+          photos: response.photos
+        };
+
+        setProjects(prev => prev.map(p => {
+          if (p._id === projectId) {
+            return {
+              ...p,
+              machines: p.machines.map(m => 
+                m.id === machine.id ? updatedMachine : m
+              )
+            };
+          }
+          return p;
+        }));
+
         if (currentProject?._id === projectId) {
-          setCurrentProject(updatedProject);
+          setCurrentProject(prev => {
+            if (!prev) return null;
+            return {
+              ...prev,
+              machines: prev.machines.map(m => 
+                m.id === machine.id ? updatedMachine : m
+              )
+            };
+          });
         }
-        if (currentMachine?._id === machine._id) {
-          setCurrentMachine(updatedProject.machines.find(m => m._id === machine._id) || null);
+
+        if (currentMachine?.id === machine.id) {
+          setCurrentMachine(updatedMachine);
         }
       }
     } catch (err) {
@@ -143,7 +235,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const deleteMachine = async (projectId: string, machineId: string) => {
     setIsLoading(true);
     try {
-      const updatedProject = await projectService.deleteMachine(projectId, machineId);
+      const updatedProject = await machineService.deleteMachine(projectId, machineId);
       if (updatedProject) {
         setProjects(prev => prev.map(p => p._id === projectId ? updatedProject : p));
         if (currentProject?._id === projectId) {

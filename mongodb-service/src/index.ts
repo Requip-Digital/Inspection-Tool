@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import projectRoutes from './routes/projectRoutes';
+import machineRoutes from './routes/machineRoutes';
 
 dotenv.config();
 
@@ -26,7 +27,8 @@ mongoose
   .catch((error) => console.error('MongoDB connection error:', error));
 
 // Routes
-app.use('/api', projectRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/machines', machineRoutes);
 
 // Basic health check route
 app.get('/health', (req, res) => {
