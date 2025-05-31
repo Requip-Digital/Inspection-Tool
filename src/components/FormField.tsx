@@ -66,7 +66,9 @@ const FormField: React.FC<FormFieldProps> = ({ field, value, onChange }) => {
             className={`w-full p-2 border border-gray-300 ${value ? 'text-gray-600' : 'text-gray-400'} rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
           >
             <option value="">Select {field.label}</option>
-            {field.options?.map((option) => (
+            {field.options?.sort((a, b) => 
+              typeof a === 'number' && typeof b === 'number' ? a - b : String(a).localeCompare(String(b))
+            ).map((option) => (
               <option key={option} value={option}>
                 {option}
               </option>
