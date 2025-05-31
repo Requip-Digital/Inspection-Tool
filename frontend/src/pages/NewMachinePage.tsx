@@ -5,15 +5,23 @@ import Header from '../components/Header';
 import { MACHINE_TEMPLATES } from '../data/machineTemplates';
 import { Loader2 } from 'lucide-react';
 import { machineService } from '../services/machineService';
+import { Section } from '../types';
 
 // Create empty sections structure
-const DEFAULT_SECTIONS = [
+const DEFAULT_SECTIONS: Section[] = [
   {
     id: 'general',
     name: 'General',
     fields: []
   }
 ];
+
+interface FormData {
+  name: string;
+  sheetNumber: number;
+  template: string;
+  sections: Section[];
+}
 
 const DEFAULT_MACHINE = {
   name: '',
@@ -26,11 +34,11 @@ const NewMachinePage: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
   const { projects, addMachine } = useAppContext();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     sheetNumber: 1,
-    template: 'Toyota',
-    sections: MACHINE_TEMPLATES?.[0]?.sections || DEFAULT_SECTIONS
+    template: '',
+    sections: DEFAULT_SECTIONS
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [selectedMachineId, setSelectedMachineId] = useState('');
@@ -42,10 +50,16 @@ const NewMachinePage: React.FC = () => {
       if (project) {
         // Auto-increment sheet number
         const nextSheetNumber = project.machines.length + 1;
+        
+        // Find the matching machine template based on project's templateId
+        const matchingTemplate = MACHINE_TEMPLATES.find(t => t.name === project.templateId);
+        
         setFormData((prev) => ({
           ...prev,
           sheetNumber: nextSheetNumber,
-          name: `Machine ${String.fromCharCode(64 + nextSheetNumber)}`
+          name: `Machine ${String.fromCharCode(64 + nextSheetNumber)}`,
+          template: project.templateId || '',
+          sections: matchingTemplate?.sections || DEFAULT_SECTIONS
         }));
       } else {
         navigate('/');
@@ -113,6 +127,8 @@ const NewMachinePage: React.FC = () => {
           projectId // Add projectId to match schema requirement
         };
         await addMachine(projectId, machineData);
+
+        console.log('machineData', machineData);
         
         navigate(`/project/${projectId}`);
       } catch (error) {

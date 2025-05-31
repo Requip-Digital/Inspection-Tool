@@ -129,6 +129,9 @@ const MachineDetailPage: React.FC = () => {
         sheetNumber: formData.sheetNumber || machine.sheetNumber
       };
 
+      // console.log('updateData', updateData);
+      console.log('formData', formData);
+
       // Update the machine
       await updateMachine(projectId, updateData);
       

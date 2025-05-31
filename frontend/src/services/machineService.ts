@@ -29,6 +29,7 @@ export const machineService = {
   },
 
   async updateMachine(machineId: string, machineData: Partial<MachineType>): Promise<ProjectType | null> {
+    console.log('machineData', machineData);
     const response = await fetch(`${API_URL}/machines/${machineId}`, {
       method: 'PUT',
       headers: {
