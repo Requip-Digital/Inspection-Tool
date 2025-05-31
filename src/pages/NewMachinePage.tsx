@@ -2,7 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import Header from '../components/Header';
-import { DEFAULT_MACHINE } from '../data/mockData';
+
+const DEFAULT_MACHINE = {
+  id: '',
+  name: '',
+  sheetNumber: 0,
+  millMachineNo: '',
+  model: '',
+  typeOfFabric: '',
+  yearOfMfg: new Date().getFullYear(),
+  photos: []
+};
 
 const NewMachinePage: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();

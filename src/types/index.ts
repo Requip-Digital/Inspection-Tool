@@ -1,11 +1,11 @@
 export interface Project {
   id: string;
   name: string;
+  template: string;
   inspectionDate: string;
   city: string;
   originallyBought: string;
   mfgOrigin: string;
-  template: string;
   machines: Machine[];
   imageUrl?: string;
 }
@@ -37,7 +37,7 @@ export interface Section {
 export interface Field {
   id: string;
   name: string;
-  type: 'text' | 'number' | 'date' | 'select' | 'multiselect' | 'file';
+  type: 'text' | 'number' | 'select' | 'date' | 'file';
   label: string;
   placeholder?: string;
   required?: boolean;
@@ -49,8 +49,11 @@ export interface Field {
     max?: number;
     message?: string;
   };
-  dependsOn?: {
-    field: string;
-    value: string | number | boolean;
-  };
+}
+
+export interface FormFieldProps {
+  field: Field;
+  value: any;
+  onChange: (name: string, value: any) => void;
+  readOnly?: boolean;
 }

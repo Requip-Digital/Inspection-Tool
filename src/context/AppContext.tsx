@@ -1,19 +1,22 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { Project, Machine, Template } from '../types';
-import { MOCK_PROJECTS, MOCK_TEMPLATES } from '../data/mockData';
+import { PROJECT_TEMPLATES } from '../data/projectTemplates';
+import { MACHINE_TEMPLATES } from '../data/machineTemplates';
+import { MOCK_PROJECTS } from '../data/mockData';
 
 interface AppContextType {
   projects: Project[];
-  templates: Template[];
+  projectTemplates: Template[];
+  machineTemplates: Template[];
   currentProject: Project | null;
   currentMachine: Machine | null;
   searchTerm: string;
   isLoading: boolean;
   error: string | null;
   setProjects: React.Dispatch<React.SetStateAction<Project[]>>;
-  setCurrentProject: React.Dispatch<React.SetStateAction<Project | null>>;
-  setCurrentMachine: React.Dispatch<React.SetStateAction<Machine | null>>;
-  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+  setCurrentProject: (project: Project | null) => void;
+  setCurrentMachine: (machine: Machine | null) => void;
+  setSearchTerm: (term: string) => void;
   addProject: (project: Omit<Project, 'id'>) => void;
   updateProject: (project: Project) => void;
   deleteProject: (id: string) => void;
@@ -24,38 +27,24 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
+export const useAppContext = () => {
+  const context = useContext(AppContext);
+  if (!context) {
+    throw new Error('useAppContext must be used within an AppProvider');
+  }
+  return context;
+};
+
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [projects, setProjects] = useState<Project[]>(MOCK_PROJECTS);
-  const [templates, setTemplates] = useState<Template[]>(MOCK_TEMPLATES);
   const [currentProject, setCurrentProject] = useState<Project | null>(null);
   const [currentMachine, setCurrentMachine] = useState<Machine | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  // Load data from localStorage on init
-  useEffect(() => {
-    try {
-      const storedProjects = localStorage.getItem('projects');
-      if (storedProjects) {
-        setProjects(JSON.parse(storedProjects));
-      }
-    } catch (error) {
-      console.error('Error loading data from localStorage:', error);
-    }
-  }, []);
-
-  // Save projects to localStorage whenever they change
-  useEffect(() => {
-    try {
-      localStorage.setItem('projects', JSON.stringify(projects));
-    } catch (error) {
-      console.error('Error saving data to localStorage:', error);
-    }
-  }, [projects]);
+  const [isLoading] = useState(false);
+  const [error] = useState<string | null>(null);
 
   const addProject = (project: Omit<Project, 'id'>) => {
-    const newProject = {
+    const newProject: Project = {
       ...project,
       id: Date.now().toString(),
       machines: []
@@ -74,9 +63,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const addMachine = (projectId: string, machine: Omit<Machine, 'id'>) => {
-    const newMachine = {
+    const newMachine: Machine = {
       ...machine,
-      id: Date.now().toString()
+      id: Date.now().toString(),
+      name: machine.name || '',
+      sheetNumber: machine.sheetNumber || 0,
+      millMachineNo: machine.millMachineNo || '',
+      model: machine.model || '',
+      typeOfFabric: machine.typeOfFabric || '',
+      yearOfMfg: machine.yearOfMfg || new Date().getFullYear(),
+      photos: machine.photos || []
     };
     setProjects((prev) =>
       prev.map((p) => {
@@ -125,7 +121,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     <AppContext.Provider
       value={{
         projects,
-        templates,
+        projectTemplates: PROJECT_TEMPLATES,
+        machineTemplates: MACHINE_TEMPLATES,
         currentProject,
         currentMachine,
         searchTerm,
@@ -148,10 +145,4 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   );
 };
 
-export const useAppContext = () => {
-  const context = useContext(AppContext);
-  if (context === undefined) {
-    throw new Error('useAppContext must be used within an AppProvider');
-  }
-  return context;
-};
+export default AppContext;

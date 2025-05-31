@@ -77,7 +77,7 @@ const HomePage: React.FC = () => {
           <div className="bg-white rounded-lg shadow-sm p-4 mb-4 animate-fadeIn">
             <h3 className="font-medium mb-2">Filter by</h3>
             <div className="flex flex-wrap gap-2">
-              <TemplateButton label="Recent" value="" />
+              <TemplateButton label="All" value="" />
               <TemplateButton label="Toyota" value="Toyota" />
               <TemplateButton label="Picanol" value="Picanol" />  
             </div>

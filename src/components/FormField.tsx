@@ -244,7 +244,7 @@ const FormField: React.FC<FormFieldProps> = ({ field, value, onChange, readOnly 
                       onClick={() => setShowModal(true)}
                       className="bg-gray-100 flex items-center justify-center rounded-md hover:bg-gray-200 transition-colors"
                     >
-                      <span className="text-gray-600 font-medium">+{images.length - 3} more photos</span>
+                      <span className="text-gray-600 font-medium">+{images.length - 3} photos</span>
                     </button>
                   )}
                 </div>

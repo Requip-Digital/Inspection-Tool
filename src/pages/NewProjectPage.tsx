@@ -2,30 +2,58 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import Header from '../components/Header';
+import FormField from '../components/FormField';
 import { ChevronDown } from 'lucide-react';
+import { PROJECT_TEMPLATES } from '../data/projectTemplates';
+
+interface BaseFormData {
+  name: string;
+  template: string;
+  city: string;
+  nearestAirport: string;
+  condition: string;
+  originallyBought: string;
+  mfgOrigin: string;
+}
+
+interface ToyotaFormData extends BaseFormData {
+  template: 'Toyota';
+  inspectionDate: string;
+}
+
+interface PicanalFormData extends BaseFormData {
+  template: 'Picanol';
+  millName: string;
+  country: string;
+  inspectedByDate: string;
+  delivery: string;
+  askingPrice: string;
+}
+
+type FormData = ToyotaFormData | PicanalFormData;
 
 const NewProjectPage: React.FC = () => {
-  const { addProject, templates } = useAppContext();
+  const { addProject } = useAppContext();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: '',
-    template: '',
+    template: 'Toyota',
     inspectionDate: '',
     city: '',
     originallyBought: '',
-    mfgOrigin: ''
-  });
+    mfgOrigin: '',
+    nearestAirport: '',
+    condition: ''
+  } as ToyotaFormData);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showTemplateDropdown, setShowTemplateDropdown] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
+  const handleChange = (name: string, value: any) => {
+    setFormData(prev => ({
+      ...prev,
       [name]: value
-    });
+    }));
     
-    // Clear error when field is updated
     if (errors[name]) {
       setErrors({
         ...errors,
@@ -36,6 +64,7 @@ const NewProjectPage: React.FC = () => {
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
+    const template = PROJECT_TEMPLATES.find(t => t.name === formData.template);
     
     if (!formData.name) {
       newErrors.name = 'Project name is required';
@@ -44,13 +73,16 @@ const NewProjectPage: React.FC = () => {
     if (!formData.template) {
       newErrors.template = 'Template selection is required';
     }
-    
-    if (!formData.inspectionDate) {
-      newErrors.inspectionDate = 'Inspection date is required';
-    }
-    
-    if (!formData.city) {
-      newErrors.city = 'City is required';
+
+    // Validate required fields from template
+    if (template) {
+      template.sections.forEach(section => {
+        section.fields.forEach(field => {
+          if (field.required && !formData[field.name as keyof FormData]) {
+            newErrors[field.name] = `${field.label} is required`;
+          }
+        });
+      });
     }
     
     setErrors(newErrors);
@@ -61,20 +93,20 @@ const NewProjectPage: React.FC = () => {
     e.preventDefault();
     
     if (validateForm()) {
-      // Generate a name based on template and incremental number if not provided
       const projectName = formData.name || 
         `${formData.template} Project ${Math.floor(Math.random() * 1000)}`;
       
-      addProject({
+      const projectData = {
         name: projectName,
         template: formData.template,
-        inspectionDate: formData.inspectionDate,
+        inspectionDate: formData.template === 'Toyota' ? (formData as ToyotaFormData).inspectionDate : '',
         city: formData.city,
         originallyBought: formData.originallyBought,
         mfgOrigin: formData.mfgOrigin,
         machines: []
-      });
+      };
       
+      addProject(projectData);
       navigate('/');
     }
   };
@@ -84,11 +116,54 @@ const NewProjectPage: React.FC = () => {
   };
 
   const selectTemplate = (templateName: string) => {
-    setFormData({
-      ...formData,
-      template: templateName
-    });
+    if (templateName === 'Toyota') {
+      setFormData({
+        name: '',
+        template: 'Toyota',
+        inspectionDate: '',
+        city: '',
+        originallyBought: '',
+        mfgOrigin: '',
+        nearestAirport: '',
+        condition: ''
+      } as ToyotaFormData);
+    } else {
+      setFormData({
+        name: '',
+        template: 'Picanol',
+        millName: '',
+        city: '',
+        country: '',
+        nearestAirport: '',
+        condition: '',
+        inspectedByDate: '',
+        originallyBought: '',
+        mfgOrigin: '',
+        delivery: '',
+        askingPrice: ''
+      } as PicanalFormData);
+    }
     setShowTemplateDropdown(false);
+  };
+
+  const renderFormFields = () => {
+    if (!formData.template) return null;
+
+    const template = PROJECT_TEMPLATES.find(t => t.name === formData.template);
+    if (!template) return null;
+
+    return template.sections.map(section => (
+      <div key={section.id}>
+        {section.fields.map(field => (
+          <FormField
+            key={field.id}
+            field={field}
+            value={formData[field.name as keyof FormData]}
+            onChange={handleChange}
+          />
+        ))}
+      </div>
+    ));
   };
 
   return (
@@ -107,7 +182,7 @@ const NewProjectPage: React.FC = () => {
               type="text"
               name="name"
               value={formData.name}
-              onChange={handleChange}
+              onChange={(e) => handleChange('name', e.target.value)}
               placeholder="E.g., Toyota Project 3"
               className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 errors.name ? 'border-red-500' : 'border-gray-300'
@@ -138,7 +213,7 @@ const NewProjectPage: React.FC = () => {
               
               {showTemplateDropdown && (
                 <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg animate-fadeIn">
-                  {templates.map((template) => (
+                  {PROJECT_TEMPLATES.map((template) => (
                     <button
                       key={template.id}
                       type="button"
@@ -157,73 +232,7 @@ const NewProjectPage: React.FC = () => {
             </div>
           </div>
           
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Inspection Date
-            </label>
-            <input
-              type="date"
-              name="inspectionDate"
-              value={formData.inspectionDate}
-              onChange={handleChange}
-              className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.inspectionDate ? 'border-red-500' : 'border-gray-300'
-              }`}
-            />
-            {errors.inspectionDate && (
-              <p className="mt-1 text-sm text-red-500">{errors.inspectionDate}</p>
-            )}
-          </div>
-          
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              City
-            </label>
-            <input
-              type="text"
-              name="city"
-              value={formData.city}
-              onChange={handleChange}
-              placeholder="E.g., Pune, Surat"
-              className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.city ? 'border-red-500' : 'border-gray-300'
-              }`}
-            />
-            {errors.city && (
-              <p className="mt-1 text-sm text-red-500">{errors.city}</p>
-            )}
-          </div>
-          
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Originally Bought
-            </label>
-            <select
-              name="originallyBought"
-              value={formData.originallyBought}
-              onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Select</option>
-              <option value="New">New</option>
-              <option value="Used">Used</option>
-              <option value="Refurbished">Refurbished</option>
-            </select>
-          </div>
-          
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Mfg. Origin
-            </label>
-            <input
-              type="text"
-              name="mfgOrigin"
-              value={formData.mfgOrigin}
-              onChange={handleChange}
-              placeholder="E.g., Japan, Germany"
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+          {renderFormFields()}
           
           <button
             type="submit"
