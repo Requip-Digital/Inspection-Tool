@@ -4,7 +4,7 @@ import { useAppContext } from '../context/AppContext';
 import Header from '../components/Header';
 import SearchBar from '../components/SearchBar';
 import AddButton from '../components/AddButton';
-import { FileText, ChevronRight, Download } from 'lucide-react';
+import { FileText, ChevronRight, Download, Loader2 } from 'lucide-react';
 
 const formatDate = (dateString: string | undefined) => {
   if (!dateString) return 'N/A';
@@ -19,7 +19,7 @@ const formatDate = (dateString: string | undefined) => {
 const ProjectDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { projects, setCurrentProject } = useAppContext();
+  const { projects, setCurrentProject, isLoading } = useAppContext();
   const [project, setProject] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredMachines, setFilteredMachines] = useState<any[]>([]);
@@ -46,8 +46,6 @@ const ProjectDetailPage: React.FC = () => {
     }
   }, [searchTerm, project]);
 
-  console.log(filteredMachines);
-
   const handleAddMachine = () => {
     navigate(`/project/${id}/machine/new`);
   };
@@ -56,8 +54,18 @@ const ProjectDetailPage: React.FC = () => {
     navigate(`/project/${id}/machine/${machineId}`);
   };
 
-  if (!project) {
-    return <div className="p-4">Loading...</div>;
+  if (isLoading || !project) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex flex-col">
+        <Header />
+        <main className="flex-1 container mx-auto px-4 py-6 max-w-lg flex items-center justify-center">
+          <div className="text-center">
+            <Loader2 className="h-8 w-8 animate-spin text-blue-500 mx-auto mb-2" />
+            <p className="text-gray-500">Loading project details...</p>
+          </div>
+        </main>
+      </div>
+    );
   }
 
   const renderDetailField = (label: string, value: string | undefined, endBorder: boolean = true) => (

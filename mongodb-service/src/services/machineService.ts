@@ -15,12 +15,12 @@ export const createMachine = async (projectId: string, machineData: MachineData)
     const templateData  = machineData;
 
     // Create sections with fields from template
-    const sections = templateData.sections.map((section: Section) => ({
+    const sections = templateData.sections.map((section: Section, sectionIndex: number) => ({
       id: section.id,
       name: section.name,
-      fields: section.fields.map((field: Field) => ({
+      fields: section.fields.map((field: Field, fieldIndex: number) => ({
         ...field,
-        value: machineData[field.name] || null
+        value: machineData.sections[sectionIndex].fields[fieldIndex].value || null
       }))
     }));
 
@@ -51,6 +51,7 @@ export const createMachine = async (projectId: string, machineData: MachineData)
 
     return savedMachine;
   } catch (error) {
+    console.log('error', error);
     throw error;
   }
 };
@@ -95,10 +96,8 @@ export const updateMachine = async (machineId: string, updateData: UpdateData): 
     }
 
     const savedMachine = await machine.save();
-    console.log('Saved machine:', savedMachine); // Debug log
     return savedMachine;
   } catch (error) {
-    console.error('Error updating machine:', error); // Debug log
     throw error;
   }
 };

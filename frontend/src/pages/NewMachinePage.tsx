@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import Header from '../components/Header';
 import { MACHINE_TEMPLATES } from '../data/machineTemplates';
+import { Loader2 } from 'lucide-react';
+import { machineService } from '../services/machineService';
 
 // Create empty sections structure
 const DEFAULT_SECTIONS = [
@@ -32,6 +34,7 @@ const NewMachinePage: React.FC = () => {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [selectedMachineId, setSelectedMachineId] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (projectId && projects.length > 0) {
@@ -66,22 +69,24 @@ const NewMachinePage: React.FC = () => {
     }
   };
 
-  const handleMachineSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleMachineSelect = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const machineId = e.target.value;
     setSelectedMachineId(machineId);
 
     if (machineId && projectId) {
-      const project = projects.find((p) => p._id === projectId);
-      if (project) {
-        const selectedMachine = project.machines.find((m) => m._id === machineId);
+      try {
+        const selectedMachine = await machineService.getMachine(machineId);
         if (selectedMachine) {
           // Keep the current name and sheet number, but copy the template and sections
-          setFormData((prev) => ({
-            ...prev,
+          const newFormData = {
+            ...formData,
             template: selectedMachine.template || 'Toyota',
-            sections: selectedMachine.sections || DEFAULT_SECTIONS
-          }));
+            sections: JSON.parse(JSON.stringify(selectedMachine.sections || DEFAULT_SECTIONS))
+          };
+          setFormData(newFormData);
         }
+      } catch (error) {
+        console.error('Error fetching machine data:', error);
       }
     }
   };
@@ -97,18 +102,31 @@ const NewMachinePage: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (validateForm() && projectId) {
-      addMachine(projectId, {
-        ...formData,
-        projectId // Add projectId to match schema requirement
-      });
-      
-      navigate(`/project/${projectId}`);
+      setIsSubmitting(true);
+      try {
+        const machineData = {
+          ...formData,
+          projectId // Add projectId to match schema requirement
+        };
+        await addMachine(projectId, machineData);
+        
+        navigate(`/project/${projectId}`);
+      } catch (error) {
+        console.error('Failed to create machine:', error);
+        setErrors(prev => ({
+          ...prev,
+          submit: 'Failed to create machine. Please try again.'
+        }));
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
+
 
   // Get current project and its machines
   const currentProject = projectId ? projects.find((p) => p._id === projectId) : null;
@@ -178,11 +196,29 @@ const NewMachinePage: React.FC = () => {
             </div>
           )}
           
+          {errors.submit && (
+            <div className="mb-4 p-2 rounded-lg bg-red-50 text-red-600 text-center">
+              {errors.submit}
+            </div>
+          )}
+          
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-3 px-4 rounded-lg hover:bg-blue-600 transition-colors"
+            disabled={isSubmitting}
+            className={`w-full flex items-center justify-center py-3 px-4 rounded-lg transition-colors ${
+              isSubmitting 
+                ? 'bg-blue-400 cursor-not-allowed' 
+                : 'bg-blue-500 hover:bg-blue-600'
+            } text-white`}
           >
-            Save
+            {isSubmitting ? (
+              <>
+                <Loader2 size={20} className="animate-spin mr-2" />
+                Creating Machine...
+              </>
+            ) : (
+              'Save'
+            )}
           </button>
         </form>
       </main>

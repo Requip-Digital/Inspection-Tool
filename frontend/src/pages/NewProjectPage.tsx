@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import Header from '../components/Header';
 import FormField from '../components/FormField';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Loader2 } from 'lucide-react';
 import { PROJECT_TEMPLATES } from '../data/projectTemplates';
 
 interface BaseFormData {
@@ -47,6 +47,7 @@ const NewProjectPage: React.FC = () => {
   } as ToyotaFormData);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showTemplateDropdown, setShowTemplateDropdown] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (name: string, value: any) => {
     setFormData(prev => ({
@@ -89,34 +90,45 @@ const NewProjectPage: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (validateForm()) {
-      const projectName = formData.name || 
-        `${formData.template} Project ${Math.floor(Math.random() * 1000)}`;
-      
-      const projectData = {
-        _id: '',
-        name: projectName,
-        templateId: formData.template,
-        details: {
-          inspectionDate: formData.template === 'Toyota' ? (formData as ToyotaFormData).inspectionDate : (formData as PicanalFormData).inspectionDate ,
-          city: formData.city,
-          originallyBought: formData.originallyBought as 'New' | 'Used' | 'Refurbished',
-          mfgOrigin: formData.mfgOrigin,
-          nearestAirport: formData.nearestAirport,
-          condition: formData.condition as 'Excellent' | 'Good' | 'Fair' | 'Poor',
-          millName: formData.template === 'Picanol' ? (formData as PicanalFormData).millName : undefined,
-          country: formData.template === 'Picanol' ? (formData as PicanalFormData).country : undefined,
-          delivery: formData.template === 'Picanol' ? (formData as PicanalFormData).delivery : undefined,
-          askingPrice: formData.template === 'Picanol' ? (formData as PicanalFormData).askingPrice : undefined
-        },
-        machines: []
-      };
-      
-      addProject(projectData);
-      navigate('/');
+      setIsSubmitting(true);
+      try {
+        const projectName = formData.name || 
+          `${formData.template} Project ${Math.floor(Math.random() * 1000)}`;
+        
+        const projectData = {
+          _id: '',
+          name: projectName,
+          templateId: formData.template,
+          details: {
+            inspectionDate: formData.template === 'Toyota' ? (formData as ToyotaFormData).inspectionDate : (formData as PicanalFormData).inspectionDate ,
+            city: formData.city,
+            originallyBought: formData.originallyBought as 'New' | 'Used' | 'Refurbished',
+            mfgOrigin: formData.mfgOrigin,
+            nearestAirport: formData.nearestAirport,
+            condition: formData.condition as 'Excellent' | 'Good' | 'Fair' | 'Poor',
+            millName: formData.template === 'Picanol' ? (formData as PicanalFormData).millName : undefined,
+            country: formData.template === 'Picanol' ? (formData as PicanalFormData).country : undefined,
+            delivery: formData.template === 'Picanol' ? (formData as PicanalFormData).delivery : undefined,
+            askingPrice: formData.template === 'Picanol' ? (formData as PicanalFormData).askingPrice : undefined
+          },
+          machines: []
+        };
+        
+        await addProject(projectData);
+        navigate('/');
+      } catch (error) {
+        console.error('Failed to create project:', error);
+        setErrors(prev => ({
+          ...prev,
+          submit: 'Failed to create project. Please try again.'
+        }));
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -243,11 +255,29 @@ const NewProjectPage: React.FC = () => {
           
           {renderFormFields()}
           
+          {errors.submit && (
+            <div className="mb-4 p-2 rounded-lg bg-red-50 text-red-600 text-center">
+              {errors.submit}
+            </div>
+          )}
+          
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-3 px-4 rounded-lg hover:bg-blue-600 transition-colors"
+            disabled={isSubmitting}
+            className={`w-full flex items-center justify-center py-3 px-4 rounded-lg transition-colors ${
+              isSubmitting 
+                ? 'bg-blue-400 cursor-not-allowed' 
+                : 'bg-blue-500 hover:bg-blue-600'
+            } text-white`}
           >
-            Save
+            {isSubmitting ? (
+              <>
+                <Loader2 size={20} className="animate-spin mr-2" />
+                Creating Project...
+              </>
+            ) : (
+              'Save'
+            )}
           </button>
         </form>
       </main>

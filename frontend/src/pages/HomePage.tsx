@@ -5,10 +5,10 @@ import Header from '../components/Header';
 import SearchBar from '../components/SearchBar';
 import ProjectCard from '../components/ProjectCard';
 import AddButton from '../components/AddButton';
-import { Filter } from 'lucide-react';
+import { Filter, Loader2 } from 'lucide-react';
 
 const HomePage: React.FC = () => {
-  const { projects, searchTerm, setSearchTerm } = useAppContext();
+  const { projects, searchTerm, setSearchTerm, isLoading } = useAppContext();
   const [filteredProjects, setFilteredProjects] = useState(projects);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState('');
@@ -82,7 +82,12 @@ const HomePage: React.FC = () => {
           </div>
         )}
 
-        {filteredProjects.length === 0 ? (
+        {isLoading ? (
+          <div className="bg-white rounded-lg shadow p-6 text-center">
+            <Loader2 className="h-8 w-8 animate-spin text-blue-500 mx-auto mb-2" />
+            <p className="text-gray-500">Loading projects...</p>
+          </div>
+        ) : filteredProjects.length === 0 ? (
           <div className="bg-white rounded-lg shadow p-6 text-center">
             <p className="text-gray-500">No projects found</p>
             <button 

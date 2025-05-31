@@ -4,7 +4,7 @@ import { useAppContext } from '../context/AppContext';
 import Header from '../components/Header';
 import TabNavigation from '../components/TabNavigation';
 import FormField from '../components/FormField';
-import { Eye, Pencil, Save } from 'lucide-react';
+import { Eye, Pencil, Save, Loader2 } from 'lucide-react';
 import { Project, Machine, Template, Section, Field } from '../types';
 import { machineService } from '../services/machineService';
 
@@ -167,15 +167,55 @@ const MachineDetailPage: React.FC = () => {
   };
 
   if (isLoading) {
-    return <div className="p-4">Loading...</div>;
+    return (
+      <div className="min-h-screen bg-gray-50 flex flex-col">
+        <Header />
+        <main className="flex-1 container mx-auto px-4 py-6 max-w-lg flex items-center justify-center">
+          <div className="text-center">
+            <Loader2 className="h-8 w-8 animate-spin text-blue-500 mx-auto mb-2" />
+            <p className="text-gray-500">Loading machine details...</p>
+          </div>
+        </main>
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="p-4 text-red-600">{error}</div>;
+    return (
+      <div className="min-h-screen bg-gray-50 flex flex-col">
+        <Header />
+        <main className="flex-1 container mx-auto px-4 py-6 max-w-lg">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
+            <p>{error}</p>
+            <button 
+              onClick={() => navigate(`/project/${projectId}`)}
+              className="mt-2 text-sm text-red-600 hover:text-red-800"
+            >
+              Go back to project
+            </button>
+          </div>
+        </main>
+      </div>
+    );
   }
 
   if (!project || !machine || !template) {
-    return <div className="p-4">No data available</div>;
+    return (
+      <div className="min-h-screen bg-gray-50 flex flex-col">
+        <Header />
+        <main className="flex-1 container mx-auto px-4 py-6 max-w-lg">
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-yellow-700">
+            <p>No data available</p>
+            <button 
+              onClick={() => navigate(`/project/${projectId}`)}
+              className="mt-2 text-sm text-yellow-600 hover:text-yellow-800"
+            >
+              Go back to project
+            </button>
+          </div>
+        </main>
+      </div>
+    );
   }
 
   const tabs = template.sections.map((section: Section) => section.name);
@@ -199,19 +239,52 @@ const MachineDetailPage: React.FC = () => {
             >
               {isReadOnly ? (
                 <>
-                  <Eye size={18} />
-                  <span>Read Only</span>
+                  <Pencil size={16} />
+                  <span>Edit</span>
                 </>
               ) : (
                 <>
-                  <Pencil size={18} />
-                  <span>Editing</span>
+                  <Eye size={16} />
+                  <span>View</span>
                 </>
               )}
             </button>
+            {!isReadOnly && (
+              <button
+                onClick={handleSave}
+                disabled={isSaving || !hasUnsavedChanges}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors ${
+                  isSaving || !hasUnsavedChanges
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                }`}
+              >
+                {isSaving ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" />
+                    <span>Saving...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save size={16} />
+                    <span>Save</span>
+                  </>
+                )}
+              </button>
+            )}
           </div>
         </div>
-        
+
+        {saveMessage && (
+          <div className={`mb-4 p-2 rounded-lg text-center ${
+            saveMessage.includes('Failed') 
+              ? 'bg-red-50 text-red-600' 
+              : 'bg-green-50 text-green-600'
+          }`}>
+            {saveMessage}
+          </div>
+        )}
+
         <TabNavigation 
           tabs={tabs} 
           activeTab={activeTab} 
@@ -232,25 +305,7 @@ const MachineDetailPage: React.FC = () => {
           ) : (
             <p className="text-gray-500 py-4 text-center">No fields in this section</p>
           )}
-          {!isReadOnly && hasUnsavedChanges && (
-              <button
-                onClick={handleSave}
-                disabled={isSaving}
-                className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg border border-green-500 text-green-600 hover:bg-green-100 transition-colors"
-              >
-                <Save size={18} />
-                <span>{isSaving ? 'Saving...' : 'Save Changes'}</span>
-              </button>
-            )}
         </div>
-        
-        {saveMessage && (
-          <div className={`fixed bottom-4 right-4 px-4 py-2 rounded-lg ${
-            isSaving ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-600'
-          }`}>
-            {saveMessage}
-          </div>
-        )}
       </main>
     </div>
   );
