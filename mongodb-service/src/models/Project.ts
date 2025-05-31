@@ -9,7 +9,6 @@ export interface IProjectDetails {
   condition: 'Excellent' | 'Good' | 'Fair' | 'Poor';
   millName?: string;
   country?: string;
-  inspectedByDate?: Date;
   delivery?: string;
   askingPrice?: string;
 }
@@ -39,7 +38,6 @@ const ProjectDetailsSchema = new Schema({
   },
   millName: String,
   country: String,
-  inspectedByDate: Date,
   delivery: String,
   askingPrice: String
 });

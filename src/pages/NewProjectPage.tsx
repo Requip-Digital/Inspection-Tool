@@ -25,7 +25,7 @@ interface PicanalFormData extends BaseFormData {
   template: 'Picanol';
   millName: string;
   country: string;
-  inspectedByDate: string;
+  inspectionDate: string;
   delivery: string;
   askingPrice: string;
 }
@@ -101,7 +101,7 @@ const NewProjectPage: React.FC = () => {
         name: projectName,
         templateId: formData.template,
         details: {
-          inspectionDate: formData.template === 'Toyota' ? (formData as ToyotaFormData).inspectionDate : undefined,
+          inspectionDate: formData.template === 'Toyota' ? (formData as ToyotaFormData).inspectionDate : (formData as PicanalFormData).inspectionDate ,
           city: formData.city,
           originallyBought: formData.originallyBought as 'New' | 'Used' | 'Refurbished',
           mfgOrigin: formData.mfgOrigin,
@@ -109,7 +109,6 @@ const NewProjectPage: React.FC = () => {
           condition: formData.condition as 'Excellent' | 'Good' | 'Fair' | 'Poor',
           millName: formData.template === 'Picanol' ? (formData as PicanalFormData).millName : undefined,
           country: formData.template === 'Picanol' ? (formData as PicanalFormData).country : undefined,
-          inspectedByDate: formData.template === 'Picanol' ? (formData as PicanalFormData).inspectedByDate : undefined,
           delivery: formData.template === 'Picanol' ? (formData as PicanalFormData).delivery : undefined,
           askingPrice: formData.template === 'Picanol' ? (formData as PicanalFormData).askingPrice : undefined
         },
@@ -146,7 +145,7 @@ const NewProjectPage: React.FC = () => {
         country: '',
         nearestAirport: '',
         condition: '',
-        inspectedByDate: '',
+        inspectionDate: '',
         originallyBought: '',
         mfgOrigin: '',
         delivery: '',
@@ -184,26 +183,7 @@ const NewProjectPage: React.FC = () => {
         <h2 className="text-2xl font-bold mb-6">Create New Project</h2>
         
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm p-6">
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Project Name
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={(e) => handleChange('name', e.target.value)}
-              placeholder="E.g., Toyota Project 3"
-              className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.name ? 'border-red-500' : 'border-gray-300'
-              }`}
-            />
-            {errors.name && (
-              <p className="mt-1 text-sm text-red-500">{errors.name}</p>
-            )}
-          </div>
-          
-          <div className="mb-4">
+        <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Select Template
             </label>
@@ -240,6 +220,25 @@ const NewProjectPage: React.FC = () => {
                 <p className="mt-1 text-sm text-red-500">{errors.template}</p>
               )}
             </div>
+          </div>
+          
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Project Name
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={(e) => handleChange('name', e.target.value)}
+              placeholder="E.g., Toyota Project 3"
+              className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                errors.name ? 'border-red-500' : 'border-gray-300'
+              }`}
+            />
+            {errors.name && (
+              <p className="mt-1 text-sm text-red-500">{errors.name}</p>
+            )}
           </div>
           
           {renderFormFields()}

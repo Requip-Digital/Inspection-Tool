@@ -11,7 +11,6 @@ export interface Project {
     condition: 'Excellent' | 'Good' | 'Fair' | 'Poor';
     millName?: string;
     country?: string;
-    inspectedByDate?: string;
     delivery?: string;
     askingPrice?: string;
   };

@@ -9,8 +9,8 @@ interface ProjectCardProps {
 const formatDate = (dateString: string | undefined) => {
   if (!dateString) return 'N/A';
   const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
+  return date.toLocaleDateString('en-IN', {
+    year: '2-digit',
     month: 'numeric',
     day: 'numeric'
   });

@@ -60,6 +60,15 @@ const ProjectDetailPage: React.FC = () => {
     return <div className="p-4">Loading...</div>;
   }
 
+  const renderDetailField = (label: string, value: string | undefined, endBorder: boolean = true) => (
+    <div className={`${endBorder ? 'border-b pb-2 mb-2' : ''} `}>
+      <div className="flex justify-between py-2">
+        <span className="text-gray-600">{label}</span>
+        <span className="font-medium">{value || 'N/A'}</span>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
@@ -68,33 +77,23 @@ const ProjectDetailPage: React.FC = () => {
         <h2 className="text-2xl font-bold mb-4">{project.name}</h2>
 
         <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
-          <div className="border-b pb-2 mb-2">
-            <div className="flex justify-between py-2">
-              <span className="text-gray-600">Inspection Date</span>
-              <span className="font-medium">{formatDate(project.details.inspectionDate)}</span>
-            </div>
-          </div>
+          {/* Common fields for all templates */}
+          {renderDetailField('Inspection Date', formatDate(project.details.inspectionDate))}
+          {renderDetailField('City', project.details.city)}
+          {renderDetailField('Originally Bought', project.details.originallyBought)}
+          {renderDetailField('Mfg. Origin', project.details.mfgOrigin)}
+          {renderDetailField('Nearest Airport', project.details.nearestAirport)}
+          {renderDetailField('Condition', project.details.condition, false)}
 
-          <div className="border-b pb-2 mb-2">
-            <div className="flex justify-between py-2">
-              <span className="text-gray-600">City</span>
-              <span className="font-medium">{project.details.city}</span>
-            </div>
-          </div>
-
-          <div className="border-b pb-2 mb-2">
-            <div className="flex justify-between py-2">
-              <span className="text-gray-600">Originally Bought</span>
-              <span className="font-medium">{project.details.originallyBought || 'N/A'}</span>
-            </div>
-          </div>
-
-          <div>
-            <div className="flex justify-between py-2">
-              <span className="text-gray-600">Mfg. Origin</span>
-              <span className="font-medium">{project.details.mfgOrigin || 'N/A'}</span>
-            </div>
-          </div>
+          {/* Picanol specific fields */}
+          {project.templateId === 'Picanol' && (
+            <>
+              {renderDetailField('Mill Name', project.details.millName)}
+              {renderDetailField('Country', project.details.country)}
+              {renderDetailField('Delivery', project.details.delivery)}
+              {renderDetailField('Asking Price', project.details.askingPrice, false)}
+            </>
+          )}
         </div>
 
         <div className="mb-6">

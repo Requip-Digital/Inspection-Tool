@@ -24,7 +24,6 @@ export const projectService = {
       condition?: string;
       millName?: string;
       country?: string;
-      inspectedByDate?: Date;
       delivery?: string;
       askingPrice?: number;
     };
@@ -48,7 +47,6 @@ export const projectService = {
         condition?: string;
         millName?: string;
         country?: string;
-        inspectedByDate?: Date;
         delivery?: string;
         askingPrice?: number;
       };

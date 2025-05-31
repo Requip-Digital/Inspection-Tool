@@ -40,7 +40,6 @@ export const projectController = {
           condition: req.body.details?.condition,
           millName: req.body.details?.millName,
           country: req.body.details?.country,
-          inspectedByDate: req.body.details?.inspectedByDate,
           delivery: req.body.details?.delivery,
           askingPrice: req.body.details?.askingPrice
         }
@@ -68,7 +67,6 @@ export const projectController = {
           condition: req.body.details?.condition,
           millName: req.body.details?.millName,
           country: req.body.details?.country,
-          inspectedByDate: req.body.details?.inspectedByDate,
           delivery: req.body.details?.delivery,
           askingPrice: req.body.details?.askingPrice
         }
