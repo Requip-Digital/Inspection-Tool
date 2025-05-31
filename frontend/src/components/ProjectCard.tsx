@@ -36,17 +36,11 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
         </div>
         
         <div className="w-32 relative flex items-center">
-          {project.imageUrl ? (
             <img 
-              src={project.imageUrl} 
+              src={project.templateId === 'Picanol' ? 'https://cdn.worldvectorlogo.com/logos/picanol.svg' : 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Toyota.svg/2880px-Toyota.svg.png'} 
               alt={project.name} 
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain pr-4"
             />
-          ) : (
-            <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">
-              No image
-            </div>
-          )}
         </div>
       </div>
     </div>

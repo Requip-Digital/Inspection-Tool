@@ -91,7 +91,7 @@ const ProjectDetailPage: React.FC = () => {
           {renderDetailField('Originally Bought', project.details.originallyBought)}
           {renderDetailField('Mfg. Origin', project.details.mfgOrigin)}
           {renderDetailField('Nearest Airport', project.details.nearestAirport)}
-          {renderDetailField('Condition', project.details.condition, false)}
+          {renderDetailField('Condition', project.details.condition, project.templateId === 'Picanol' ? true : false)}
 
           {/* Picanol specific fields */}
           {project.templateId === 'Picanol' && (
@@ -127,7 +127,7 @@ const ProjectDetailPage: React.FC = () => {
             </div>
           ) : (
             <div className="space-y-2">
-              {filteredMachines.map((machine) => (
+              {filteredMachines.map((machine, index) => (
                 <div 
                   key={machine.id}
                   className="bg-white rounded-lg shadow-sm p-4 flex items-center hover:bg-gray-50 cursor-pointer transition-colors"
@@ -138,7 +138,7 @@ const ProjectDetailPage: React.FC = () => {
                   </div>
                   <div className="flex-1">
                     <h4 className="font-medium">{machine.name}</h4>
-                    <p className="text-sm text-gray-500">Sheet {machine.sheetNumber}</p>
+                    <p className="text-sm text-gray-500">Sheet {index + 1}</p>
                   </div>
                   <ChevronRight size={20} className="text-gray-400" />
                 </div>
