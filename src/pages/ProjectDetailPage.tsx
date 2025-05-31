@@ -37,8 +37,6 @@ const ProjectDetailPage: React.FC = () => {
     }
   }, [id, projects, navigate, setCurrentProject]);
 
-  console.log(project);
-
   useEffect(() => {
     if (project) {
       const filtered = project.machines.filter((machine: any) =>
@@ -47,6 +45,8 @@ const ProjectDetailPage: React.FC = () => {
       setFilteredMachines(filtered);
     }
   }, [searchTerm, project]);
+
+  console.log(filteredMachines);
 
   const handleAddMachine = () => {
     navigate(`/project/${id}/machine/new`);

@@ -68,21 +68,37 @@ export const updateMachine = async (machineId: string, updateData: UpdateData): 
       throw new Error('Machine not found');
     }
 
-    // Update basic fields
-    if (updateData.name) machine.name = updateData.name;
-    if (updateData.sheetNumber) machine.sheetNumber = updateData.sheetNumber;
-
-    // Update field values in sections
-    machine.sections.forEach((section: any) => {
-      section.fields.forEach((field: any) => {
-        if (updateData[field.name] !== undefined) {
-          field.value = updateData[field.name];
-        }
-      });
+    // Update basic fields if they exist in updateData
+    Object.keys(updateData).forEach(key => {
+      if (key !== 'sections' && key !== '_id' && updateData[key] !== undefined) {
+        (machine as any)[key] = updateData[key];
+      }
     });
 
-    return await machine.save();
+    // Create a map of field names to their new values
+    const fieldValues: Record<string, any> = {};
+    Object.entries(updateData).forEach(([key, value]) => {
+      if (key !== 'sections' && key !== '_id' && key !== 'name' && key !== 'sheetNumber') {
+        fieldValues[key] = value;
+      }
+    });
+
+    // Update field values in sections
+    if (machine.sections) {
+      machine.sections = machine.sections.map(section => ({
+        ...section,
+        fields: section.fields.map(field => ({
+          ...field,
+          value: fieldValues[field.name] !== undefined ? fieldValues[field.name] : field.value
+        }))
+      }));
+    }
+
+    const savedMachine = await machine.save();
+    console.log('Saved machine:', savedMachine); // Debug log
+    return savedMachine;
   } catch (error) {
+    console.error('Error updating machine:', error); // Debug log
     throw error;
   }
 };

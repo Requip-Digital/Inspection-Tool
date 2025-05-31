@@ -181,7 +181,7 @@ const FormField: React.FC<FormFieldProps> = ({ field, value, onChange, readOnly 
             onChange={handleChange}
             required={field.required}
             disabled={readOnly}
-            className={`w-full p-2 border border-gray-300 ${value ? 'text-gray-600' : 'text-gray-400'} rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+            className={`w-full p-2 border border-gray-300 ${readOnly ? '' : value ? 'text-gray-600' : 'text-gray-400'} rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
               readOnly ? 'bg-gray-50 cursor-not-allowed' : ''
             }`}
           >
