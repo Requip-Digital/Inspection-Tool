@@ -157,8 +157,6 @@ const MachineDetailPage: React.FC = () => {
   const handleFieldChange = (name: string, value: any) => {
     if (isReadOnly) return;
     
-    console.log('Field change:', name, value); // Debug log
-    
     const newData = {
       ...formData,
       [name]: value
@@ -166,10 +164,6 @@ const MachineDetailPage: React.FC = () => {
     
     setFormData(newData);
     setHasUnsavedChanges(true);
-  };
-
-  const handleBackToProjects = () => {
-    navigate(`/project/${projectId}`);
   };
 
   if (isLoading) {
