@@ -6,6 +6,7 @@ import { MACHINE_TEMPLATES } from '../data/machineTemplates';
 import { Loader2 } from 'lucide-react';
 import { machineService } from '../services/machineService';
 import { Section } from '../types';
+import toast from 'react-hot-toast';
 
 // Create empty sections structure
 const DEFAULT_SECTIONS: Section[] = [
@@ -121,6 +122,8 @@ const NewMachinePage: React.FC = () => {
     
     if (validateForm() && projectId) {
       setIsSubmitting(true);
+      const submitToast = toast.loading('Creating new machine...');
+      
       try {
         const machineData = {
           ...formData,
@@ -128,13 +131,11 @@ const NewMachinePage: React.FC = () => {
         };
         await addMachine(projectId, machineData);
         
+        toast.success('Machine created successfully!', { id: submitToast });
         navigate(`/project/${projectId}`);
       } catch (error) {
         console.error('Failed to create machine:', error);
-        setErrors(prev => ({
-          ...prev,
-          submit: 'Failed to create machine. Please try again.'
-        }));
+        toast.error('Failed to create machine. Please try again.', { id: submitToast });
       } finally {
         setIsSubmitting(false);
       }
@@ -207,12 +208,6 @@ const NewMachinePage: React.FC = () => {
               <p className="mt-1 text-sm text-gray-500">
                 This will copy all details except name and sheet number
               </p>
-            </div>
-          )}
-          
-          {errors.submit && (
-            <div className="mb-4 p-2 rounded-lg bg-red-50 text-red-600 text-center">
-              {errors.submit}
             </div>
           )}
           

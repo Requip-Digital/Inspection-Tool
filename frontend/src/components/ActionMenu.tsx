@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { MoreVertical, Download, Trash2, Loader2 } from 'lucide-react';
 
 interface ActionMenuProps {
@@ -15,9 +15,23 @@ const ActionMenu: React.FC<ActionMenuProps> = ({
   showExport = false
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
-    <div className="fixed bottom-6 right-6">
+    <div className="fixed bottom-6 right-6" ref={menuRef}>
       <div className="relative">
         {isOpen && (
           <div className="absolute bottom-16 right-0 bg-white rounded-lg shadow-lg overflow-hidden w-48">

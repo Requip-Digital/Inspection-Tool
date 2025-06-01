@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import FormField from '../components/FormField';
 import { ChevronDown, Loader2 } from 'lucide-react';
 import { PROJECT_TEMPLATES } from '../data/projectTemplates';
+import toast from 'react-hot-toast';
 
 interface BaseFormData {
   name: string;
@@ -93,6 +94,8 @@ const NewProjectPage: React.FC = () => {
     
     if (validateForm()) {
       setIsSubmitting(true);
+      const submitToast = toast.loading('Creating new project...');
+      
       try {
         const projectName = formData.name || 
           `${formData.template} Project ${Math.floor(Math.random() * 1000)}`;
@@ -116,13 +119,11 @@ const NewProjectPage: React.FC = () => {
         };
         
         await addProject(projectData);
+        toast.success('Project created successfully!', { id: submitToast });
         navigate('/');
       } catch (error) {
         console.error('Failed to create project:', error);
-        setErrors(prev => ({
-          ...prev,
-          submit: 'Failed to create project. Please try again.'
-        }));
+        toast.error('Failed to create project. Please try again.', { id: submitToast });
       } finally {
         setIsSubmitting(false);
       }
@@ -249,12 +250,6 @@ const NewProjectPage: React.FC = () => {
           </div>
           
           {renderFormFields()}
-          
-          {errors.submit && (
-            <div className="mb-4 p-2 rounded-lg bg-red-50 text-red-600 text-center">
-              {errors.submit}
-            </div>
-          )}
           
           <button
             type="submit"

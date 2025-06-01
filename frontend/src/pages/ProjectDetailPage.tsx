@@ -6,6 +6,7 @@ import SearchBar from '../components/SearchBar';
 import { FileText, ChevronRight, Loader2, Plus } from 'lucide-react';
 import ActionMenu from '../components/ActionMenu';
 import { projectService } from '../services/projectService';
+import toast from 'react-hot-toast';
 
 const formatDate = (dateString: string | undefined) => {
   if (!dateString) return 'N/A';
@@ -93,9 +94,11 @@ const ProjectDetailPage: React.FC = () => {
       // Cleanup
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
+      
+      toast.success('Export completed successfully!');
     } catch (error) {
       console.error('Failed to export project:', error);
-      alert('Failed to export project. Please try again.');
+      toast.error('Failed to export project. Please try again.');
     }
   };
 

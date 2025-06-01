@@ -8,6 +8,7 @@ import { Eye, Pencil, Save, Loader2 } from 'lucide-react';
 import { Project, Machine, Template, Section, Field } from '../types';
 import { machineService } from '../services/machineService';
 import ActionMenu from '../components/ActionMenu';
+import toast from 'react-hot-toast';
 
 const MachineDetailPage: React.FC = () => {
   const { projectId, machineId } = useParams<{ projectId: string; machineId: string }>();
@@ -19,7 +20,6 @@ const MachineDetailPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('General');
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [isSaving, setIsSaving] = useState(false);
-  const [saveMessage, setSaveMessage] = useState('');
   const [isReadOnly, setIsReadOnly] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -127,7 +127,7 @@ const MachineDetailPage: React.FC = () => {
     if (!projectId || !machineId || isReadOnly || !machine) return;
     
     setIsSaving(true);
-    setSaveMessage('Saving...');
+    const saveToast = toast.loading('Saving changes...');
     
     try {
       // Create the update data with both basic and field values
@@ -143,28 +143,18 @@ const MachineDetailPage: React.FC = () => {
       await updateMachine(projectId, updateData);
       
       setIsSaving(false);
-      setSaveMessage('All changes saved');
       setHasUnsavedChanges(false);
       
       // Move to next tab after successful save
       const nextTab = getNextTab();
       setActiveTab(nextTab);
       
-      // Clear success message after a delay
-      setTimeout(() => {
-        setSaveMessage('');
-      }, 3000);
+      toast.success('Changes saved successfully!', { id: saveToast });
       
     } catch (error) {
       console.error('Failed to save changes:', error);
-      
       setIsSaving(false);
-      setSaveMessage('Failed to save changes');
-      
-      // Clear error message after a delay
-      setTimeout(() => {
-        setSaveMessage('');
-      }, 3000);
+      toast.error('Failed to save changes. Please try again.', { id: saveToast });
     }
   };
 
@@ -187,14 +177,15 @@ const MachineDetailPage: React.FC = () => {
     if (!confirmDelete) return;
     
     setIsDeleting(true);
+    const deleteToast = toast.loading('Deleting machine...');
     
     try {
       await machineService.deleteMachine(machineId);
+      toast.success('Machine deleted successfully!', { id: deleteToast });
       navigate(`/project/${projectId}`);
     } catch (error) {
       console.error('Failed to delete machine:', error);
-      alert('Failed to delete machine. Please try again.');
-    } finally {
+      toast.error('Failed to delete machine. Please try again.', { id: deleteToast });
       setIsDeleting(false);
     }
   };
@@ -308,38 +299,28 @@ const MachineDetailPage: React.FC = () => {
         </div>
 
         {!isReadOnly && (
-              <button
-                onClick={handleSave}
-                disabled={isSaving || !hasUnsavedChanges}
-                className={`flex w-full justify-center items-center gap-2 px-3 py-1.5 rounded-lg transition-colors ${
-                  isSaving || !hasUnsavedChanges
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : 'bg-blue-600 text-white hover:bg-blue-700'
-                }`}
-              >
-                {isSaving ? (
-                  <>
-                    <Loader2 size={16} className="animate-spin" />
-                    <span>Saving...</span>
-                  </>
-                ) : (
-                  <>
-                    <Save size={16} />
-                    <span>Save and Next</span>
-                  </>
-                )}
-              </button>
+          <button
+            onClick={handleSave}
+            disabled={isSaving || !hasUnsavedChanges}
+            className={`flex w-full justify-center items-center gap-2 px-3 py-1.5 rounded-lg transition-colors ${
+              isSaving || !hasUnsavedChanges
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                : 'bg-blue-600 text-white hover:bg-blue-700'
+            }`}
+          >
+            {isSaving ? (
+              <>
+                <Loader2 size={16} className="animate-spin" />
+                <span>Saving...</span>
+              </>
+            ) : (
+              <>
+                <Save size={16} />
+                <span>Save and Next</span>
+              </>
             )}
-
-          {saveMessage && (
-            <div className={`fixed bottom-4 right-4 px-4 py-2 rounded-lg shadow-lg transition-opacity duration-300 ${
-              saveMessage.includes('Failed')
-                ? 'bg-red-500 text-white'
-                : 'bg-green-500 text-white'
-            }`}>
-              {saveMessage}
-            </div>
-          )}
+          </button>
+        )}
 
         <ActionMenu
           onDelete={handleDelete}

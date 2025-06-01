@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AppProvider } from './context/AppContext';
+import { Toaster } from 'react-hot-toast';
 
 // Pages
 import HomePage from './pages/HomePage';
@@ -18,9 +19,10 @@ function App() {
           <Route path="/project/:id" element={<ProjectDetailPage />} />
           <Route path="/project/:projectId/machine/new" element={<NewMachinePage />} />
           <Route path="/project/:projectId/machine/:machineId" element={<MachineDetailPage />} />
-          <Route path="*" element={<Navigate to="/\" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
+      <Toaster position="bottom-right" />
     </AppProvider>
   );
 }
