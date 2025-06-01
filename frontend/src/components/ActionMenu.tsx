@@ -55,19 +55,6 @@ const ActionMenu: React.FC<ActionMenuProps> = ({
       <div className="relative">
         {isOpen && (
           <div className="absolute bottom-16 right-0 bg-white rounded-lg shadow-lg overflow-hidden w-48">
-            {showExport && onExport && (
-              <button
-                onClick={() => {
-                  onExport();
-                  setIsOpen(false);
-                }}
-                className="w-full flex items-center gap-2 px-4 py-3 text-left hover:bg-gray-50 transition-colors"
-              >
-                <Download size={16} />
-                <span>Export</span>
-              </button>
-            )}
-
             <button
               onClick={() => {
                 onDelete();
@@ -92,6 +79,19 @@ const ActionMenu: React.FC<ActionMenuProps> = ({
                 </>
               )}
             </button>
+            
+            {showExport && onExport && (
+              <button
+                onClick={() => {
+                  onExport();
+                  setIsOpen(false);
+                }}
+                className="w-full flex items-center gap-2 px-4 py-3 text-left hover:bg-gray-50 transition-colors"
+              >
+                <Download size={16} />
+                <span>Export</span>
+              </button>
+            )}
           </div>
         )}
 
