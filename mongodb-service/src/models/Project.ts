@@ -12,11 +12,27 @@ export interface IProjectDetails {
   askingPrice?: string;
 }
 
+export interface IMachineForPDF {
+  id: string;
+  name: string;
+  sections: Array<{
+    id: string;
+    name: string;
+    fields: Array<{
+      id: string;
+      name: string;
+      type: string;
+      label: string;
+      value: any;
+    }>;
+  }>;
+}
+
 export interface IProject extends Document {
   name: string;
   templateId: string;
   details: IProjectDetails;
-  machines: Array<{ id: string; name: string }>;
+  machines: IMachineForPDF[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -47,7 +63,18 @@ const ProjectSchema = new Schema({
   details: { type: ProjectDetailsSchema, required: true },
   machines: [{
     id: { type: Schema.Types.ObjectId, ref: 'Machine' },
-    name: { type: String }
+    name: { type: String },
+    sections: [{
+      id: { type: Schema.Types.ObjectId, ref: 'Section' },
+      name: { type: String },
+      fields: [{
+        id: { type: Schema.Types.ObjectId, ref: 'Field' },
+        name: { type: String },
+        type: { type: String },
+        label: { type: String },
+        value: { type: Schema.Types.Mixed }
+      }]
+    }]
   }]
 }, { timestamps: true });
 

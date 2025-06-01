@@ -51,5 +51,17 @@ export const projectService = {
       method: 'DELETE',
     });
     return response.ok;
+  },
+
+  async exportProject(id: string): Promise<Blob> {
+    const response = await fetch(`${API_URL}/projects/${id}/export`, {
+      method: 'POST',
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to generate PDF');
+    }
+
+    return response.blob();
   }
 }; 

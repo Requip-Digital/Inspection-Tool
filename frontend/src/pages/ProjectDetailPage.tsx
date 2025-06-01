@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import SearchBar from '../components/SearchBar';
 import { FileText, ChevronRight, Loader2, Plus } from 'lucide-react';
 import ActionMenu from '../components/ActionMenu';
+import { projectService } from '../services/projectService';
 
 const formatDate = (dateString: string | undefined) => {
   if (!dateString) return 'N/A';
@@ -74,9 +75,28 @@ const ProjectDetailPage: React.FC = () => {
     }
   };
 
-  const handleExport = () => {
-    // Export functionality would go here
-    console.log('Export clicked');
+  const handleExport = async () => {
+    if (!project) return;
+
+    try {
+      // Get the PDF file
+      const blob = await projectService.exportProject(project._id);
+      
+      // Create a download link
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `inspection_report_${project.name}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      
+      // Cleanup
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Failed to export project:', error);
+      alert('Failed to export project. Please try again.');
+    }
   };
 
   if (isLoading || !project) {
