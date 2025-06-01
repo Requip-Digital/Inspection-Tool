@@ -115,6 +115,14 @@ const MachineDetailPage: React.FC = () => {
     setActiveTab(tab);
   };
 
+  const getNextTab = () => {
+    const currentIndex = tabs.indexOf(activeTab);
+    if (currentIndex < tabs.length - 1) {
+      return tabs[currentIndex + 1];
+    }
+    return tabs[0]; // Loop back to first tab if we're at the end
+  };
+
   const handleSave = async () => {
     if (!projectId || !machineId || isReadOnly || !machine) return;
     
@@ -137,6 +145,10 @@ const MachineDetailPage: React.FC = () => {
       setIsSaving(false);
       setSaveMessage('All changes saved');
       setHasUnsavedChanges(false);
+      
+      // Move to next tab after successful save
+      const nextTab = getNextTab();
+      setActiveTab(nextTab);
       
       // Clear success message after a delay
       setTimeout(() => {
@@ -273,16 +285,6 @@ const MachineDetailPage: React.FC = () => {
           </div>
         </div>
 
-        {saveMessage && (
-          <div className={`mb-4 p-2 rounded-lg text-center ${
-            saveMessage.includes('Failed') 
-              ? 'bg-red-50 text-red-600' 
-              : 'bg-green-50 text-green-600'
-          }`}>
-            {saveMessage}
-          </div>
-        )}
-
         <TabNavigation 
           tabs={tabs} 
           activeTab={activeTab} 
@@ -323,11 +325,21 @@ const MachineDetailPage: React.FC = () => {
                 ) : (
                   <>
                     <Save size={16} />
-                    <span>Save</span>
+                    <span>Save and Next</span>
                   </>
                 )}
               </button>
             )}
+
+          {saveMessage && (
+            <div className={`fixed bottom-4 right-4 px-4 py-2 rounded-lg shadow-lg transition-opacity duration-300 ${
+              saveMessage.includes('Failed')
+                ? 'bg-red-500 text-white'
+                : 'bg-green-500 text-white'
+            }`}>
+              {saveMessage}
+            </div>
+          )}
 
         <ActionMenu
           onDelete={handleDelete}

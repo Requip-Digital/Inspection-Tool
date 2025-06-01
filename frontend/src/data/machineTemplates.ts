@@ -14,7 +14,7 @@ export const MACHINE_TEMPLATES: Template[] = [
           { id: 'yearOfMfg', name: 'yearOfMfg', type: 'number', label: 'Year of Manufacturing', validation: { min: 2000, max: new Date().getFullYear(), message: 'Only above 2000' } },
           { id: 'typeOfFabric', name: 'typeOfFabric', type: 'select', label: 'Type Of Fabric', options: ['Velvet', 'Carpet', 'Terry', 'Label', 'Tyre Cord', 'Denim', 'Grey', 'Yarn Dyed', 'Jacquard Fabric', 'Georget', 'Matras Sticking', 'Upholsterry', 'Kanvas', 'Net', 'Bed Sheet', 'Sarong/Sari'] },
           { id: 'workingWidth', name: 'workingWidth', type: 'select', label: 'Working Width (cm)', options: [150, 170, 190, 210, 230, 250, 280, 340, 360] },
-          { id: 'machineNameplatePhoto', name: 'machineNameplatePhoto', type: 'file', label: 'Machine Nameplate Photo'},
+          { id: 'machineNameplatePhoto', name: 'machineNameplatePhoto', type: 'file', label: 'Machine Nameplate Photo', required: true},
         ]
       },
       {
@@ -26,8 +26,8 @@ export const MACHINE_TEMPLATES: Template[] = [
           { id: 'photoSheddingMotionModel', name: 'photoSheddingMotionModel', type: 'file', label: 'Shedding Motion Model' },
           { id: 'sheddingMotionCapacity', name: 'sheddingMotionCapacity', type: 'select', label: 'Shedding Motion Capacity (Lever)', options: [24, 10, 20, 12, 16, 8, 6, 4, 7, 14, 9] },
           { id: 'sheddingMotionInstalled', name: 'sheddingMotionInstalled', type: 'select', label: 'Shedding Motion Installed Capacity (Lever)', options: [24, 10, 20, 12, 16, 8, 6, 4, 7, 14, 9] },
-          { id: 'photoLever', name: 'photoLever', type: 'file', label: 'Lever Photo' },
-          { id: 'photoLeverCapacity', name: 'photoLeverCapacity', type: 'file', label: 'Lever Capacity Photo' },
+          { id: 'photoLever', name: 'photoLever', type: 'file', label: 'Lever Photo', validation: { min: 1, message: 'At least one lever photo is required' }},
+          { id: 'photoLeverCapacity', name: 'photoLeverCapacity', type: 'file', label: 'Lever Capacity Photo', validation: { min: 1, message: 'At least one lever capacity photo is required' }},
         ]
       },
       {
@@ -88,7 +88,7 @@ export const MACHINE_TEMPLATES: Template[] = [
         fields: [
           { id: 'inverter', name: 'inverter', type: 'select', label: 'Inverter', options: ['Group', 'Individual', 'No. inverter supplied'] },
           { id: 'photoInverter', name: 'photoInverter', type: 'file', label: 'Inverter Photo' },
-          { id: 'photoElectricPanelBox', name: 'photoElectricPanelBox', type: 'file', label: 'Electric Panel Box Photo' },
+          { id: 'photoElectricPanelBox', name: 'photoElectricPanelBox', type: 'file', label: 'Electric Panel Box Photo', validation: { min: 3, message: 'At least one electric panel box photo is required' }},
           { id: 'voltage', name: 'voltage', type: 'select', label: 'Voltage', options: [200, 220, 380, 440, 560] },
           { id: 'frequency', name: 'frequency', type: 'select', label: 'Frequency', options: [50, 60] }
         ]
@@ -132,8 +132,8 @@ export const MACHINE_TEMPLATES: Template[] = [
           { id: 'sheddingMotionModelPhoto', name: 'sheddingMotionModelPhoto', type: 'file', label: 'Shedding Motion Model Photo' },
           { id: 'sheddingMotionCapacity', name: 'sheddingMotionCapacity', type: 'select', label: 'Shedding Motion Capacity (Lever)', options: [24, 10, 20, 12, 16, 8, 6, 4, 7, 14, 9] },
           { id: 'sheddingMotionInstalled', name: 'sheddingMotionInstalled', type: 'select', label: 'Shedding Motion Installed Capacity (Lever)', options: [24, 10, 20, 12, 16, 8, 6, 4, 7, 14, 9] },
-          { id: 'installedLeverPhoto', name: 'installedLeverPhoto', type: 'file', label: 'Installed Lever Photo' },
-          { id: 'leverCapacityPhoto', name: 'leverCapacityPhoto', type: 'file', label: 'Lever Capacity Photo' },
+          { id: 'leverPhoto', name: 'leverPhoto', type: 'file', label: 'Lever Photo', validation: { min: 1, message: 'At least one lever photo is required' }},
+          { id: 'leverCapacityPhoto', name: 'leverCapacityPhoto', type: 'file', label: 'Lever Capacity Photo', validation: { min: 1, message: 'At least one lever capacity photo is required' }},
         ]
       },
       {

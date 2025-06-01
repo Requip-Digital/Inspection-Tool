@@ -88,7 +88,13 @@ const FormField: React.FC<FormFieldProps> = ({ field, value, onChange, readOnly 
       
       // If we already have images, append new ones
       const currentImages = Array.isArray(value) ? value : (value ? [value] : []);
-      onChange(field.name, [...currentImages, ...validImages]);
+      const newImages = [...currentImages, ...validImages];
+      onChange(field.name, newImages);
+
+      // Clear validation error if minimum requirement is met
+      if (field.validation?.min && newImages.length >= field.validation.min) {
+        onChange(`${field.name}Error`, '');
+      }
     }
   };
 
@@ -115,9 +121,23 @@ const FormField: React.FC<FormFieldProps> = ({ field, value, onChange, readOnly 
     if (readOnly) return;
     if (Array.isArray(value)) {
       const newImages = value.filter((_, i) => i !== index);
-      onChange(field.name, newImages.length > 0 ? newImages : null);
+      const finalValue = newImages.length > 0 ? newImages : null;
+      onChange(field.name, finalValue);
+
+      // Check if removing this image violates the minimum requirement
+      if (field.validation?.min && newImages.length < field.validation.min) {
+        field.validation.message && onChange(`${field.name}Error`, field.validation.message);
+      } else {
+        onChange(`${field.name}Error`, '');
+      }
     } else {
       onChange(field.name, null);
+      // Check if removing the only image violates the minimum requirement
+      if (field.validation?.min && field.validation.min > 0) {
+        field.validation.message && onChange(`${field.name}Error`, field.validation.message);
+      } else {
+        onChange(`${field.name}Error`, '');
+      }
     }
   };
 
@@ -256,7 +276,7 @@ const FormField: React.FC<FormFieldProps> = ({ field, value, onChange, readOnly 
                   >
                     <CircleSlash className="text-gray-400 mb-1" size={24} />
                     <span className="text-sm text-gray-500">No Photos</span>
-                    </div>
+                  </div>
                 </div>
               )}
 
