@@ -4,7 +4,6 @@ import { useAppContext } from '../context/AppContext';
 import Header from '../components/Header';
 import SearchBar from '../components/SearchBar';
 import ProjectCard from '../components/ProjectCard';
-import AddButton from '../components/AddButton';
 import { Filter, Loader2, Plus } from 'lucide-react';
 
 const HomePage: React.FC = () => {

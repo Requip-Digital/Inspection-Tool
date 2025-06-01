@@ -59,6 +59,51 @@ async function generatePDF(project: Project): Promise<string> {
       const outputPath = `inspection_report_${project.name}.pdf`;
       const writeStream = fs.createWriteStream(outputPath);
 
+      // Store watermark buffer at the top level
+      let watermarkBuffer: Buffer | null = null;
+
+      // Define watermark function
+      const addWatermark = () => {
+        if (!watermarkBuffer) return;
+        
+        const pageWidth = doc.page.width;
+        const pageHeight = doc.page.height;
+
+        // Set very low opacity for watermark
+        doc.save();
+        doc.opacity(0.2);
+
+        // Calculate center point for rotation
+        const centerX = pageWidth / 2;
+        const centerY = pageHeight / 2;
+
+        // Add timestamp text
+        const timestamp = new Date().toLocaleString();
+
+        // Translate to center, rotate, then translate back
+        doc.translate(centerX, centerY)
+           .rotate(-45)
+           .translate(-centerX, -centerY);
+
+        // Draw image
+        doc.image(watermarkBuffer, (pageWidth - 300) / 2, (pageHeight) / 2, {
+          width: 300,
+          align: 'center',
+          valign: 'center'
+        });
+
+        // Add timestamp text below the image
+        doc.font("Helvetica")
+           .fontSize(12)
+           .fillColor("black")
+           .text(timestamp, 
+                (pageWidth - 300) / 2, 
+                (pageHeight) / 2 + 60, 
+                { width: 300, align: 'center' });
+
+        doc.restore();
+      };
+
       // Handle stream errors
       writeStream.on('error', (error: Error) => {
         console.error('Error writing PDF:', error);
@@ -72,8 +117,11 @@ async function generatePDF(project: Project): Promise<string> {
 
       doc.pipe(writeStream);
 
+      addWatermark();
+
       // Helper function to handle page breaks
       const addNewPage = () => {
+        addWatermark();
         doc.addPage();
         currentPage++;
       };
@@ -184,6 +232,7 @@ async function generatePDF(project: Project): Promise<string> {
       try {
         const response = await axios.get(logoPath, { responseType: 'arraybuffer' });
         doc.image(Buffer.from(response.data), (doc.page.width - 100) / 2, 20, { width: 100 });
+        watermarkBuffer = Buffer.from(response.data);
       } catch (error) {
         console.error('Error loading logo:', error);
         // Continue without the logo if it fails to load
