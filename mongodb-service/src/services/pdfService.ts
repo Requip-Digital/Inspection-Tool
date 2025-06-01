@@ -1,6 +1,7 @@
 const PDFDocument = require("pdfkit");
 const fs = require("fs");
 const path = require("path");
+const axios = require("axios");
 
 interface KeyValueData {
   [key: string]: string | number;
@@ -40,8 +41,18 @@ interface Project {
   templateId: string;
 }
 
+const formatDate = (dateString: string | undefined) => {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-IN', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
 async function generatePDF(project: Project): Promise<string> {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     try {
       let currentPage = 1;
       const doc = new PDFDocument({ margin: 50 });
@@ -169,9 +180,13 @@ async function generatePDF(project: Project): Promise<string> {
       };
 
       // Load Logo
-      const logoPath = path.join(__dirname, "requip.png");
-      if (fs.existsSync(logoPath)) {
-        doc.image(logoPath, (doc.page.width - 100) / 2, 20, { width: 100 });
+      const logoPath = "https://i.ibb.co/XfX0jj52/requip.png";
+      try {
+        const response = await axios.get(logoPath, { responseType: 'arraybuffer' });
+        doc.image(Buffer.from(response.data), (doc.page.width - 100) / 2, 20, { width: 100 });
+      } catch (error) {
+        console.error('Error loading logo:', error);
+        // Continue without the logo if it fails to load
       }
 
       // Title
@@ -180,13 +195,12 @@ async function generatePDF(project: Project): Promise<string> {
         .fontSize(20)
         .fillColor("#003366")
         .text("Inspection Project Report", { align: "center" })
-        .moveDown(2);
 
       // Project Details
       sectionTitle("Project Information");
       const projectData: KeyValueData = {
         "Project Name": project.name,
-        "Inspection Date": project.details.inspectionDate || "N/A",
+        "Inspection Date": formatDate(project.details.inspectionDate) || "N/A",
         "City": project.details.city || "N/A",
         "Originally Bought": project.details.originallyBought || "N/A",
         "Nearest Airport": project.details.nearestAirport || "N/A",
