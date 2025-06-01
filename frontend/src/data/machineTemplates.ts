@@ -26,6 +26,7 @@ export const MACHINE_TEMPLATES: Template[] = [
           { id: 'photoSheddingMotionModel', name: 'photoSheddingMotionModel', type: 'file', label: 'Shedding Motion Model' },
           { id: 'sheddingMotionCapacity', name: 'sheddingMotionCapacity', type: 'select', label: 'Shedding Motion Capacity (Lever)', options: [24, 10, 20, 12, 16, 8, 6, 4, 7, 14, 9] },
           { id: 'sheddingMotionInstalled', name: 'sheddingMotionInstalled', type: 'select', label: 'Shedding Motion Installed Capacity (Lever)', options: [24, 10, 20, 12, 16, 8, 6, 4, 7, 14, 9] },
+          { id: 'noOfFramesSupplied', name: 'noOfFramesSupplied', type: 'number', label: 'No. of Frames Supplied' },
           { id: 'photoLever', name: 'photoLever', type: 'file', label: 'Lever Photo', validation: { min: 1, message: 'At least one lever photo is required' }},
           { id: 'photoLeverCapacity', name: 'photoLeverCapacity', type: 'file', label: 'Lever Capacity Photo', validation: { min: 1, message: 'At least one lever capacity photo is required' }},
         ]
@@ -99,8 +100,7 @@ export const MACHINE_TEMPLATES: Template[] = [
         fields: [
           { id: 'machineRunningRpm', name: 'machineRunningRpm', type: 'text', label: 'Machine Running RPM' },
           { id: 'autoPickFinder', name: 'autoPickFinder', type: 'select', label: 'Auto Pick Finder', options: ['Available', 'Not Available'] },
-          { id: 'underMotionCapacity', name: 'underMotionCapacity', type: 'text', label: 'Under Motion Capacity' },
-          { id: 'noOfFramesSupplied', name: 'noOfFramesSupplied', type: 'number', label: 'No. of Frames Supplied' },
+          { id: 'underMotionCapacity', name: 'underMotionCapacity', type: 'number', label: 'Under Motion Capacity' },
           { id: 'noOfHealdWire', name: 'noOfHealdWire', type: 'number', label: 'No. of Heald Wire Supplied/Set' },
           { id: 'noOfDropper', name: 'noOfDropper', type: 'number', label: 'No. of Dropper Supplied' }
         ]
@@ -115,11 +115,12 @@ export const MACHINE_TEMPLATES: Template[] = [
         id: 'general',
         name: 'General',
         fields: [
+          { id: 'millMachineNo', name: 'millMachineNo', type: 'text', label: 'Mill Machine No', required: true },
           { id: 'model', name: 'model', type: 'select', label: 'Model', options: ['OmniPlus', 'OmniPlus 800', 'Summum', 'OmniPlus i Connect'], required: true },
           { id: 'yearOfMfg', name: 'yearOfMfg', type: 'number', label: 'Year of Manufacturing', validation: { min: 2000, max: new Date().getFullYear(), message: 'Only above 2000' } },
           { id: 'typeOfFabric', name: 'typeOfFabric', type: 'select', label: 'Type Of Fabric', options: ['Velvet', 'Carpet', 'Terry', 'Label', 'Tyre Cord', 'Denim', 'Grey', 'Yarn Dyed', 'Jacquard Fabric', 'Georget', 'Matras Sticking', 'Upholsterry', 'Kanvas', 'Net', 'Bed Sheet', 'Sarong/Sari'] },
-          { id: 'machineNameplatePhoto', name: 'machineNameplatePhoto', type: 'file', label: 'Machine Nameplate Photo'},
-          { id: 'workingWidth', name: 'workingWidth', type: 'select', label: 'Working Width (cm)', options: [190, 220, 250, 280, 340] }
+          { id: 'workingWidth', name: 'workingWidth', type: 'select', label: 'Working Width (cm)', options: [150, 170, 190, 210, 230, 250, 280, 340, 360] },
+          { id: 'machineNameplatePhoto', name: 'machineNameplatePhoto', type: 'file', label: 'Machine Nameplate Photo', required: true }
         ]
       },
       {
@@ -129,15 +130,16 @@ export const MACHINE_TEMPLATES: Template[] = [
           { id: 'sheddingMechanism', name: 'sheddingMechanism', type: 'select', label: 'Shedding Mechanism', options: ['Cam', 'Crank', 'Dobby'] },
           { id: 'sheddingMotionType', name: 'sheddingMotionType', type: 'select', label: 'Shedding Motion Type', options: ['Mechanical', 'Electronic'] },
           { id: 'sheddingMotionMake', name: 'sheddingMotionMake', type: 'select', label: 'Shedding Motion Make', options: ['Staubli'] },
-          { id: 'sheddingMotionModelPhoto', name: 'sheddingMotionModelPhoto', type: 'file', label: 'Shedding Motion Model Photo' },
+          { id: 'sheddingMotionModel', name: 'sheddingMotionModel', type: 'file', label: 'Shedding Motion Model' },
           { id: 'sheddingMotionCapacity', name: 'sheddingMotionCapacity', type: 'select', label: 'Shedding Motion Capacity (Lever)', options: [24, 10, 20, 12, 16, 8, 6, 4, 7, 14, 9] },
           { id: 'sheddingMotionInstalled', name: 'sheddingMotionInstalled', type: 'select', label: 'Shedding Motion Installed Capacity (Lever)', options: [24, 10, 20, 12, 16, 8, 6, 4, 7, 14, 9] },
-          { id: 'leverPhoto', name: 'leverPhoto', type: 'file', label: 'Lever Photo', validation: { min: 1, message: 'At least one lever photo is required' }},
-          { id: 'leverCapacityPhoto', name: 'leverCapacityPhoto', type: 'file', label: 'Lever Capacity Photo', validation: { min: 1, message: 'At least one lever capacity photo is required' }},
+          { id: 'noOfFramesSupplied', name: 'noOfFramesSupplied', type: 'number', label: 'No. of Frames Supplied' },
+          { id: 'photoLever', name: 'photoLever', type: 'file', label: 'Lever Photo', validation: { min: 1, message: 'At least one lever photo is required' }},
+          { id: 'photoLeverCapacity', name: 'photoLeverCapacity', type: 'file', label: 'Lever Capacity Photo', validation: { min: 1, message: 'At least one lever capacity photo is required' }}
         ]
       },
       {
-        id: 'weftInsertionSystem',
+        id: 'weftInsertion',
         name: 'Weft Insertion System',
         fields: [
           { id: 'noOfNozzles', name: 'noOfNozzles', type: 'select', label: 'No. of Nozzles', options: [2, 4, 6] },
@@ -149,7 +151,7 @@ export const MACHINE_TEMPLATES: Template[] = [
         ]
       },
       {
-        id: 'beamSpecifications',
+        id: 'beamSpecs',
         name: 'Beam Specifications',
         fields: [
           { id: 'beamType', name: 'beamType', type: 'select', label: 'Beam Type', options: ['Single beam', 'twin beam'] },
@@ -167,25 +169,29 @@ export const MACHINE_TEMPLATES: Template[] = [
         id: 'warpControl',
         name: 'Warp Control',
         fields: [
-          { id: 'noOfWarpStopBar', name: 'noOfWarpStopBar', type: 'number', label: 'No. of Warp Stop Bar' },
-          { id: 'warpStopBarPhoto', name: 'warpStopBarPhoto', type: 'file', label: 'Photo of Warp Stop Bar' },
           { id: 'easingMotion', name: 'easingMotion', type: 'select', label: 'Easing Motion', options: ['Available', 'Not Available'] },
-          { id: 'easingMotionPhoto', name: 'easingMotionPhoto', type: 'file', label: 'Easing Motion Photo' },
-          { id: 'letOffMotion', name: 'letOffMotion', type: 'select', label: 'Let-off Motion', options: ['Mechanical', 'Electronic'] },
-          { id: 'letOffMotionPhoto', name: 'letOffMotionPhoto', type: 'file', label: 'Photo of Let-off Motion' }
+          { id: 'photoEasingMotion', name: 'photoEasingMotion', type: 'file', label: 'Easing Motion Photo' },
+          { id: 'noOfWarpStopBar', name: 'noOfWarpStopBar', type: 'number', label: 'No. of Warp Stop Bar' },
+          { id: 'photoWarpStopBar', name: 'photoWarpStopBar', type: 'file', label: 'Warp Stop Bar Photo' }
         ]
       },
       {
         id: 'criticalComponents',
         name: 'Critical Components',
         fields: [
-          { id: 'clothTakeUpType', name: 'clothTakeUpType', type: 'select', label: 'Cloth Take-Up Type', options: ['Off loom (batching)', 'on loom (cloth roll)'] },
-          { id: 'takeUpMotion', name: 'takeUpMotion', type: 'select', label: 'Take Up Motion', options: ['Mechanical', 'Electronic'] },
-          { id: 'takeUpMotionPhoto', name: 'takeUpMotionPhoto', type: 'file', label: 'Photo of Take-up Motion' },
-          { id: 'numberOfClothRolls', name: 'numberOfClothRolls', type: 'select', label: 'No. of Cloth Rolls', options: [1, 1.5, 2] },
-          { id: 'clothRollPhoto', name: 'clothRollPhoto', type: 'file', label: 'Cloth Roll Photo' },
+          { id: 'noOfClothRollSupplied', name: 'noOfClothRollSupplied', type: 'select', label: 'No. of Cloth Roll Supplied', options: [1, 1.5, 2] },
+          { id: 'clothRollPhoto', name: 'clothRollPhoto', type: 'file', label: 'Cloth Roll Photo'},
+          { id: 'selvedgeType', name: 'selvedgeType', type: 'select', label: 'Selvedge Type', options: ['Rotary Leno', 'Leno', 'Tuck-in', 'E Leno', 'Eurotech'] },
+          { id: 'photoSelvedgeType', name: 'photoSelvedgeType', type: 'file', label: 'Selvedge Type Photo' },
+          { id: 'noOfBackRestRoll', name: 'noOfBackRestRoll', type: 'select', label: 'No. of Back Rest Roll', options: [1, 2] },
           { id: 'noOfReedSupplied', name: 'noOfReedSupplied', type: 'number', label: 'No. of Reed Supplied' },
-          { id: 'noOfBackRestRoll', name: 'noOfBackRestRoll', type: 'select', label: 'No. of Back Rest Roll', options: [1, 2] }
+          { id: 'clothTakeUpType', name: 'clothTakeUpType', type: 'select', label: 'Cloth Take-Up Type', options: ['Off loom (batching)', 'on loom (cloth roll)'] },
+          { id: 'takeUpMotion', name: 'takeUpMotion', type: 'select', label: 'Take up Motion', options: ['Mechanical', 'Electronic'] },
+          { id: 'photoTakeUpMotion', name: 'photoTakeUpMotion', type: 'file', label: 'Take up Motion Photo' },
+          { id: 'letOffMotion', name: 'letOffMotion', type: 'select', label: 'Let-off Motion', options: ['Mechanical', 'Electronic'] },
+          { id: 'photoLetOffMotion', name: 'photoLetOffMotion', type: 'file', label: 'Let-off Motion Photo' },
+          { id: 'templeType', name: 'templeType', type: 'select', label: 'Temple Type', options: ['Normal', 'Full width'] },
+          { id: 'photoTemple', name: 'photoTemple', type: 'file', label: 'Temple Photo' }
         ]
       },
       {
@@ -193,7 +199,7 @@ export const MACHINE_TEMPLATES: Template[] = [
         name: 'Electrical',
         fields: [
           { id: 'inverter', name: 'inverter', type: 'select', label: 'Inverter', options: ['Group', 'Individual', 'No. inverter supplied'] },
-          { id: 'inverterPhoto', name: 'inverterPhoto', type: 'file', label: 'Inverter Photo' },
+          { id: 'photoInverter', name: 'photoInverter', type: 'file', label: 'Inverter Photo' },
           { id: 'voltage', name: 'voltage', type: 'select', label: 'Voltage', options: [200, 220, 380, 440, 560] },
           { id: 'frequency', name: 'frequency', type: 'select', label: 'Frequency', options: [50, 60] }
         ]
@@ -205,7 +211,6 @@ export const MACHINE_TEMPLATES: Template[] = [
           { id: 'machineRunningRpm', name: 'machineRunningRpm', type: 'text', label: 'Machine Running RPM' },
           { id: 'autoPickFinder', name: 'autoPickFinder', type: 'select', label: 'Auto Pick Finder', options: ['Available', 'Not Available'] },
           { id: 'underMotionCapacity', name: 'underMotionCapacity', type: 'number', label: 'Under Motion Capacity' },
-          { id: 'noOfFramesSupplied', name: 'noOfFramesSupplied', type: 'number', label: 'No. of Frames Supplied' },
           { id: 'noOfHealdWire', name: 'noOfHealdWire', type: 'number', label: 'No. of Heald Wire Supplied/Set' },
           { id: 'noOfDropper', name: 'noOfDropper', type: 'number', label: 'No. of Dropper Supplied' }
         ]
