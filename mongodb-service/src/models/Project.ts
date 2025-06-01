@@ -4,7 +4,6 @@ export interface IProjectDetails {
   inspectionDate?: Date;
   city: string;
   originallyBought: 'New' | 'Used' | 'Refurbished';
-  mfgOrigin: string;
   nearestAirport: string;
   condition: 'Excellent' | 'Good' | 'Fair' | 'Poor';
   millName?: string;
@@ -30,7 +29,6 @@ const ProjectDetailsSchema = new Schema({
     required: true,
     enum: ['New', 'Used', 'Refurbished']
   },
-  mfgOrigin: { type: String, required: true },
   nearestAirport: { type: String, required: true },
   condition: { 
     type: String, 

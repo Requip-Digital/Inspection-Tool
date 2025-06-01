@@ -20,7 +20,6 @@ export const projectService = {
       inspectionDate?: Date;
       city?: string;
       originallyBought?: string;
-      mfgOrigin?: string;
       nearestAirport?: string;
       condition?: string;
       millName?: string;
@@ -43,7 +42,6 @@ export const projectService = {
         inspectionDate?: Date;
         city?: string;
         originallyBought?: string;
-        mfgOrigin?: string;
         nearestAirport?: string;
         condition?: string;
         millName?: string;

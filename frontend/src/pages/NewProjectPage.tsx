@@ -13,7 +13,6 @@ interface BaseFormData {
   nearestAirport: string;
   condition: string;
   originallyBought: string;
-  mfgOrigin: string;
 }
 
 interface ToyotaFormData extends BaseFormData {
@@ -41,7 +40,6 @@ const NewProjectPage: React.FC = () => {
     inspectionDate: '',
     city: '',
     originallyBought: '',
-    mfgOrigin: '',
     nearestAirport: '',
     condition: ''
   } as ToyotaFormData);
@@ -107,7 +105,6 @@ const NewProjectPage: React.FC = () => {
             inspectionDate: formData.template === 'Toyota' ? (formData as ToyotaFormData).inspectionDate : (formData as PicanalFormData).inspectionDate ,
             city: formData.city,
             originallyBought: formData.originallyBought as 'New' | 'Used' | 'Refurbished',
-            mfgOrigin: formData.mfgOrigin,
             nearestAirport: formData.nearestAirport,
             condition: formData.condition as 'Excellent' | 'Good' | 'Fair' | 'Poor',
             millName: formData.template === 'Picanol' ? (formData as PicanalFormData).millName : undefined,
@@ -144,7 +141,6 @@ const NewProjectPage: React.FC = () => {
         inspectionDate: '',
         city: '',
         originallyBought: '',
-        mfgOrigin: '',
         nearestAirport: '',
         condition: ''
       } as ToyotaFormData);
@@ -159,7 +155,6 @@ const NewProjectPage: React.FC = () => {
         condition: '',
         inspectionDate: '',
         originallyBought: '',
-        mfgOrigin: '',
         delivery: '',
         askingPrice: ''
       } as PicanalFormData);

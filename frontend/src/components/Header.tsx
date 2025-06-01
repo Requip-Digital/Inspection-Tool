@@ -24,7 +24,7 @@ const Header: React.FC = () => {
       <img src={logo} alt="REQUIP Logo" className="h-5" />
       <button 
       // to have menu uncomment the icon and add p-1 in class
-        className="w-[32px] rounded-full hover:bg-blue-600 transition-colors"
+        className="w-[32px] h-[32px] rounded-full hover:bg-blue-600 transition-colors"
         aria-label="Menu"
       >
         {/* <Menu size={24} /> */}

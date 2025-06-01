@@ -116,7 +116,6 @@ const ProjectDetailPage: React.FC = () => {
           {renderDetailField('Inspection Date', formatDate(project.details.inspectionDate))}
           {renderDetailField('City', project.details.city)}
           {renderDetailField('Originally Bought', project.details.originallyBought)}
-          {renderDetailField('Mfg. Origin', project.details.mfgOrigin)}
           {renderDetailField('Nearest Airport', project.details.nearestAirport)}
           {renderDetailField('Condition', project.details.condition, project.templateId === 'Picanol' ? true : false)}
 

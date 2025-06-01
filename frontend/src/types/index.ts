@@ -6,7 +6,6 @@ export interface Project {
     inspectionDate?: string;
     city: string;
     originallyBought: 'New' | 'Used' | 'Refurbished';
-    mfgOrigin: string;
     nearestAirport: string;
     condition: 'Excellent' | 'Good' | 'Fair' | 'Poor';
     millName?: string;
