@@ -295,7 +295,14 @@ async function addWatermarkToPDF(inputPath: string, outputPath: string, watermar
       const y = (height - watermarkHeight) / 2;
       
       // Add timestamp text
-      const timestamp = new Date().toLocaleString();
+      const timestamp = new Date().toLocaleString('en-IN', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
       
       // Draw watermark with rotation and low opacity
       page.drawImage(watermarkImage, {

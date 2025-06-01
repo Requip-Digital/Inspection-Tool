@@ -80,25 +80,30 @@ const ProjectDetailPage: React.FC = () => {
     if (!project) return;
 
     try {
-      // Get the PDF file
-      const blob = await projectService.exportProject(project._id);
-      
-      // Create a download link
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `inspection_report_${project.name}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      
-      // Cleanup
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-      
-      toast.success('Export completed successfully!');
+      await toast.promise(
+        projectService.exportProject(project._id),
+        {
+          loading: 'Generating PDF...',
+          success: (blob) => {
+            // Create a download link
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `inspection_report_${project.name}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            
+            // Cleanup
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+            
+            return 'Export completed successfully!';
+          },
+          error: 'Failed to export project. Please try again.'
+        }
+      );
     } catch (error) {
       console.error('Failed to export project:', error);
-      toast.error('Failed to export project. Please try again.');
     }
   };
 
