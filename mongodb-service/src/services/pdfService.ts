@@ -2,6 +2,7 @@ const PDFDocument = require("pdfkit");
 const fs = require("fs");
 const path = require("path");
 const axios = require("axios");
+const { PDFDocument: PDFLib, degrees } = require("pdf-lib");
 
 interface KeyValueData {
   [key: string]: string | number;
@@ -57,52 +58,11 @@ async function generatePDF(project: Project): Promise<string> {
       let currentPage = 1;
       const doc = new PDFDocument({ margin: 50 });
       const outputPath = `inspection_report_${project.name}.pdf`;
-      const writeStream = fs.createWriteStream(outputPath);
+      const tempOutputPath = `temp_${outputPath}`;
+      const writeStream = fs.createWriteStream(tempOutputPath);
 
       // Store watermark buffer at the top level
       let watermarkBuffer: Buffer | null = null;
-
-      // Define watermark function
-      const addWatermark = () => {
-        if (!watermarkBuffer) return;
-        
-        const pageWidth = doc.page.width;
-        const pageHeight = doc.page.height;
-
-        // Set very low opacity for watermark
-        doc.save();
-        doc.opacity(0.2);
-
-        // Calculate center point for rotation
-        const centerX = pageWidth / 2;
-        const centerY = pageHeight / 2;
-
-        // Add timestamp text
-        const timestamp = new Date().toLocaleString();
-
-        // Translate to center, rotate, then translate back
-        doc.translate(centerX, centerY)
-           .rotate(-45)
-           .translate(-centerX, -centerY);
-
-        // Draw image
-        doc.image(watermarkBuffer, (pageWidth - 300) / 2, (pageHeight) / 2, {
-          width: 300,
-          align: 'center',
-          valign: 'center'
-        });
-
-        // Add timestamp text below the image
-        doc.font("Helvetica")
-           .fontSize(12)
-           .fillColor("black")
-           .text(timestamp, 
-                (pageWidth - 300) / 2, 
-                (pageHeight) / 2 + 60, 
-                { width: 300, align: 'center' });
-
-        doc.restore();
-      };
 
       // Handle stream errors
       writeStream.on('error', (error: Error) => {
@@ -111,17 +71,23 @@ async function generatePDF(project: Project): Promise<string> {
       });
 
       // Handle stream finish
-      writeStream.on('finish', () => {
-        resolve(outputPath);
+      writeStream.on('finish', async () => {
+        try {
+          // Add watermark using pdf-lib after the PDF is created
+          await addWatermarkToPDF(tempOutputPath, outputPath, watermarkBuffer);
+          // Delete temporary file
+          await fs.promises.unlink(tempOutputPath);
+          resolve(outputPath);
+        } catch (error) {
+          console.error('Error adding watermark:', error);
+          reject(error);
+        }
       });
 
       doc.pipe(writeStream);
 
-      addWatermark();
-
       // Helper function to handle page breaks
       const addNewPage = () => {
-        addWatermark();
         doc.addPage();
         currentPage++;
       };
@@ -199,7 +165,6 @@ async function generatePDF(project: Project): Promise<string> {
 
           currentY += rowHeight;
         });
-
         // Move down after table
         doc.y = currentY + 20;
       };
@@ -301,6 +266,62 @@ async function generatePDF(project: Project): Promise<string> {
       reject(error);
     }
   });
+}
+
+async function addWatermarkToPDF(inputPath: string, outputPath: string, watermarkBuffer: Buffer | null): Promise<void> {
+  if (!watermarkBuffer) return;
+
+  try {
+    // Read the PDF file
+    const pdfBytes = await fs.promises.readFile(inputPath);
+    const pdfDoc = await PDFLib.load(pdfBytes);
+    
+    // Embed the watermark image
+    const watermarkImage = await pdfDoc.embedPng(watermarkBuffer);
+    
+    // Get pages
+    const pages = pdfDoc.getPages();
+    
+    // Add watermark to each page
+    for (const page of pages) {
+      const { width, height } = page.getSize();
+      
+      // Calculate dimensions for watermark
+      const watermarkWidth = 300;
+      const watermarkHeight = watermarkImage.height;
+      
+      // Calculate center position
+      const x = (width - watermarkWidth) / 2;
+      const y = (height - watermarkHeight) / 2;
+      
+      // Add timestamp text
+      const timestamp = new Date().toLocaleString();
+      
+      // Draw watermark with rotation and low opacity
+      page.drawImage(watermarkImage, {
+        x,
+        y,
+        width: watermarkWidth,
+        height: watermarkHeight,
+        opacity: 0.2,
+      });
+      
+      // Add timestamp text
+      page.drawText(timestamp, {
+        x: x + 100,
+        y: y - 30,
+        size: 12,
+        opacity: 0.2,
+      });
+    }
+    
+    // Save the modified PDF
+    const modifiedPdfBytes = await pdfDoc.save();
+    await fs.promises.writeFile(outputPath, modifiedPdfBytes);
+  } catch (error) {
+    console.error('Error adding watermark to PDF:', error);
+    throw error;
+  }
 }
 
 export { generatePDF };
