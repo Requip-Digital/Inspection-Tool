@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import rateLimit from 'express-rate-limit';
 import projectRoutes from './routes/projectRoutes';
 import machineRoutes from './routes/machineRoutes';
 
@@ -9,6 +10,27 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5001;
+
+// Rate limiting configuration
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+
+// Stricter rate limit for sensitive routes (e.g., auth endpoints)
+const strictLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 30, // Limit each IP to 30 requests per windowMs
+  message: 'Too many authentication attempts from this IP, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Apply rate limiting to all routes
+app.use(globalLimiter);
 
 // Middleware
 app.use(cors({

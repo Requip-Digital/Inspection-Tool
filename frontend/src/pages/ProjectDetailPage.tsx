@@ -3,8 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import Header from '../components/Header';
 import SearchBar from '../components/SearchBar';
-import AddButton from '../components/AddButton';
-import { FileText, ChevronRight, Download, Loader2, Trash2, Plus } from 'lucide-react';
+import { FileText, ChevronRight, Loader2, Plus } from 'lucide-react';
 import ActionMenu from '../components/ActionMenu';
 
 const formatDate = (dateString: string | undefined) => {
