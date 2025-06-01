@@ -5,7 +5,7 @@ import Header from '../components/Header';
 import SearchBar from '../components/SearchBar';
 import ProjectCard from '../components/ProjectCard';
 import AddButton from '../components/AddButton';
-import { Filter, Loader2 } from 'lucide-react';
+import { Filter, Loader2, Plus } from 'lucide-react';
 
 const HomePage: React.FC = () => {
   const { projects, searchTerm, setSearchTerm, isLoading } = useAppContext();
@@ -53,7 +53,16 @@ const HomePage: React.FC = () => {
       <Header />
 
       <main className="flex-1 container mx-auto px-4 py-6 max-w-lg">
-        <h2 className="text-2xl font-bold mb-6">Projects</h2>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold">Projects</h2>
+          <button 
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
+            onClick={handleAddProject}
+          >
+            <Plus size={16} />
+            Add Project
+          </button>
+        </div>
 
         <div className="flex items-center mb-4">
           <div className="flex-1">
@@ -90,12 +99,6 @@ const HomePage: React.FC = () => {
         ) : filteredProjects.length === 0 ? (
           <div className="bg-white rounded-lg shadow p-6 text-center">
             <p className="text-gray-500">No projects found</p>
-            <button 
-              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-              onClick={handleAddProject}
-            >
-              Create your first project
-            </button>
           </div>
         ) : (
           <div className="space-y-4">
@@ -104,8 +107,6 @@ const HomePage: React.FC = () => {
             ))}
           </div>
         )}
-
-        <AddButton label="Add Project" onClick={handleAddProject} />
       </main>
     </div>
   );

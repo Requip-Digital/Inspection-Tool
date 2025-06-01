@@ -23,10 +23,11 @@ const Header: React.FC = () => {
       </div>
       <img src={logo} alt="REQUIP Logo" className="h-5" />
       <button 
-        className="p-1 rounded-full hover:bg-blue-600 transition-colors"
+      // to have menu uncomment the icon and add p-1 in class
+        className="w-[32px] rounded-full hover:bg-blue-600 transition-colors"
         aria-label="Menu"
       >
-        <Menu size={24} />
+        {/* <Menu size={24} /> */}
       </button>
     </header>
   );

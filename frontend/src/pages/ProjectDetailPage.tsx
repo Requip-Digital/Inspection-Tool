@@ -4,7 +4,8 @@ import { useAppContext } from '../context/AppContext';
 import Header from '../components/Header';
 import SearchBar from '../components/SearchBar';
 import AddButton from '../components/AddButton';
-import { FileText, ChevronRight, Download, Loader2, Trash2 } from 'lucide-react';
+import { FileText, ChevronRight, Download, Loader2, Trash2, Plus } from 'lucide-react';
+import ActionMenu from '../components/ActionMenu';
 
 const formatDate = (dateString: string | undefined) => {
   if (!dateString) return 'N/A';
@@ -74,6 +75,11 @@ const ProjectDetailPage: React.FC = () => {
     }
   };
 
+  const handleExport = () => {
+    // Export functionality would go here
+    console.log('Export clicked');
+  };
+
   if (isLoading || !project) {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -104,13 +110,6 @@ const ProjectDetailPage: React.FC = () => {
       <main className="flex-1 container mx-auto px-4 py-6 max-w-lg">
         <div className="flex justify-between mb-4">
           <h2 className="text-2xl font-bold">{project.name}</h2>
-          <button
-            className="flex items-center gap-2 px-3 py-1.5 border border-blue-300 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
-            onClick={() => {/* Export function would go here */}}
-          >
-            <Download size={16} className="" />
-            Export
-          </button>
         </div>
 
         <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
@@ -134,7 +133,16 @@ const ProjectDetailPage: React.FC = () => {
         </div>
 
         <div className="mb-6">
-          <h3 className="text-xl font-bold mb-4">Machines</h3>
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-bold">Machines</h3>
+            <button 
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
+              onClick={handleAddMachine}
+            >
+              <Plus size={16} />
+              Add Machine
+            </button>
+          </div>
           
           <div className='mb-4'>
             <SearchBar
@@ -147,12 +155,6 @@ const ProjectDetailPage: React.FC = () => {
           {filteredMachines.length === 0 ? (
             <div className="bg-white rounded-lg shadow-sm p-6 text-center">
               <p className="text-gray-500">No machines added yet</p>
-              <button 
-                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-                onClick={handleAddMachine}
-              >
-                Add your first machine
-              </button>
             </div>
           ) : (
             <div className="space-y-2">
@@ -174,33 +176,14 @@ const ProjectDetailPage: React.FC = () => {
               ))}
             </div>
           )}
-          
         </div>
 
-
-        <button
-            onClick={handleDelete}
-            disabled={isDeleting}
-            className={`w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-              isDeleting
-                ? 'bg-red-100 text-red-400 cursor-not-allowed'
-                : 'bg-red-600 text-white hover:bg-red-700'
-            }`}
-          >
-            {isDeleting ? (
-              <>
-                <Loader2 size={16} className="animate-spin" />
-                <span>Deleting...</span>
-              </>
-            ) : (
-              <>
-                <Trash2 size={16} />
-                <span>Delete Project</span>
-              </>
-            )}
-          </button>
-
-        <AddButton label="Add Machine" onClick={handleAddMachine} />
+        <ActionMenu
+          onExport={handleExport}
+          onDelete={handleDelete}
+          isDeleting={isDeleting}
+          showExport={true}
+        />
       </main>
     </div>
   );

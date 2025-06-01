@@ -4,9 +4,10 @@ import { useAppContext } from '../context/AppContext';
 import Header from '../components/Header';
 import TabNavigation from '../components/TabNavigation';
 import FormField from '../components/FormField';
-import { Eye, Pencil, Save, Loader2, Trash2 } from 'lucide-react';
+import { Eye, Pencil, Save, Loader2 } from 'lucide-react';
 import { Project, Machine, Template, Section, Field } from '../types';
 import { machineService } from '../services/machineService';
+import ActionMenu from '../components/ActionMenu';
 
 const MachineDetailPage: React.FC = () => {
   const { projectId, machineId } = useParams<{ projectId: string; machineId: string }>();
@@ -269,29 +270,6 @@ const MachineDetailPage: React.FC = () => {
                 </>
               )}
             </button>
-            {!isReadOnly && (
-              <button
-                onClick={handleSave}
-                disabled={isSaving || !hasUnsavedChanges}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors ${
-                  isSaving || !hasUnsavedChanges
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : 'bg-blue-600 text-white hover:bg-blue-700'
-                }`}
-              >
-                {isSaving ? (
-                  <>
-                    <Loader2 size={16} className="animate-spin" />
-                    <span>Saving...</span>
-                  </>
-                ) : (
-                  <>
-                    <Save size={16} />
-                    <span>Save</span>
-                  </>
-                )}
-              </button>
-            )}
           </div>
         </div>
 
@@ -327,29 +305,34 @@ const MachineDetailPage: React.FC = () => {
           )}
         </div>
 
-        <div className="mt-8 border-t pt-6">
-          <button
-            onClick={handleDelete}
-            disabled={isDeleting}
-            className={`w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-              isDeleting
-                ? 'bg-red-100 text-red-400 cursor-not-allowed'
-                : 'bg-red-600 text-white hover:bg-red-700'
-            }`}
-          >
-            {isDeleting ? (
-              <>
-                <Loader2 size={16} className="animate-spin" />
-                <span>Deleting...</span>
-              </>
-            ) : (
-              <>
-                <Trash2 size={16} />
-                <span>Delete Machine</span>
-              </>
+        {!isReadOnly && (
+              <button
+                onClick={handleSave}
+                disabled={isSaving || !hasUnsavedChanges}
+                className={`flex w-full justify-center items-center gap-2 px-3 py-1.5 rounded-lg transition-colors ${
+                  isSaving || !hasUnsavedChanges
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                }`}
+              >
+                {isSaving ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" />
+                    <span>Saving...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save size={16} />
+                    <span>Save</span>
+                  </>
+                )}
+              </button>
             )}
-          </button>
-        </div>
+
+        <ActionMenu
+          onDelete={handleDelete}
+          isDeleting={isDeleting}
+        />
       </main>
     </div>
   );
