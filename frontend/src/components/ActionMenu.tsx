@@ -1,6 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MoreVertical, Download, Trash2, Loader2 } from 'lucide-react';
 
+// Custom hook for media query
+const useMediaQuery = (query: string) => {
+  const [matches, setMatches] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    if (media.matches !== matches) {
+      setMatches(media.matches);
+    }
+
+    const listener = () => setMatches(media.matches);
+    media.addEventListener('change', listener);
+
+    return () => media.removeEventListener('change', listener);
+  }, [matches, query]);
+
+  return matches;
+};
+
 interface ActionMenuProps {
   onExport?: () => void;
   onDelete: () => void;
@@ -16,6 +35,7 @@ const ActionMenu: React.FC<ActionMenuProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const isLargeScreen = useMediaQuery('(min-width: 768px)');
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -77,9 +97,10 @@ const ActionMenu: React.FC<ActionMenuProps> = ({
 
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="bg-white p-3 rounded-full shadow-lg hover:bg-gray-50 transition-colors border border-blue-300"
+          className="bg-white p-3 rounded-full shadow-lg hover:bg-gray-50 transition-colors border border-blue-300 flex items-center gap-2"
         >
           <MoreVertical size={24} className="text-gray-600" />
+          {isLargeScreen && <span className="text-gray-600">More Options</span>}
         </button>
       </div>
     </div>
