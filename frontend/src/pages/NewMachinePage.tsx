@@ -24,13 +24,6 @@ interface FormData {
   sections: Section[];
 }
 
-const DEFAULT_MACHINE = {
-  name: '',
-  sheetNumber: 0,
-  template: 'Toyota',
-  sections: DEFAULT_SECTIONS
-};
-
 const NewMachinePage: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
