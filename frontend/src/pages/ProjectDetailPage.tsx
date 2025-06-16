@@ -153,9 +153,10 @@ const ProjectDetailPage: React.FC = () => {
               {renderDetailField('Mill Name', project.details.millName)}
               {renderDetailField('Country', project.details.country)}
               {renderDetailField('Delivery', project.details.delivery)}
-              {renderDetailField('Asking Price', project.details.askingPrice, false)}
+              {renderDetailField('Asking Price', project.details.askingPrice)}
             </>
           )}
+          {renderDetailField('No. of Machines', project.details.noOfMachines, false)}
         </div>
 
         <div className="mb-6">

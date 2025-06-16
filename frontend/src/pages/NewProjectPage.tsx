@@ -19,6 +19,7 @@ interface BaseFormData {
 interface ToyotaFormData extends BaseFormData {
   template: 'Toyota';
   inspectionDate: string;
+  noOfMachines: number;
 }
 
 interface PicanalFormData extends BaseFormData {
@@ -28,6 +29,7 @@ interface PicanalFormData extends BaseFormData {
   inspectionDate: string;
   delivery: string;
   askingPrice: string;
+  noOfMachines: number;
 }
 
 type FormData = ToyotaFormData | PicanalFormData;
@@ -42,7 +44,8 @@ const NewProjectPage: React.FC = () => {
     city: '',
     originallyBought: '',
     nearestAirport: '',
-    condition: ''
+    condition: '',
+    noOfMachines: 0
   } as ToyotaFormData);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showTemplateDropdown, setShowTemplateDropdown] = useState(false);
@@ -113,7 +116,8 @@ const NewProjectPage: React.FC = () => {
             millName: formData.template === 'Picanol' ? (formData as PicanalFormData).millName : undefined,
             country: formData.template === 'Picanol' ? (formData as PicanalFormData).country : undefined,
             delivery: formData.template === 'Picanol' ? (formData as PicanalFormData).delivery : undefined,
-            askingPrice: formData.template === 'Picanol' ? (formData as PicanalFormData).askingPrice : undefined
+            askingPrice: formData.template === 'Picanol' ? (formData as PicanalFormData).askingPrice : undefined,
+            noOfMachines: formData.noOfMachines
           },
           machines: []
         };
@@ -143,7 +147,8 @@ const NewProjectPage: React.FC = () => {
         city: '',
         originallyBought: '',
         nearestAirport: '',
-        condition: ''
+        condition: '',
+        noOfMachines: 0
       } as ToyotaFormData);
     } else {
       setFormData({
@@ -157,7 +162,8 @@ const NewProjectPage: React.FC = () => {
         inspectionDate: '',
         originallyBought: '',
         delivery: '',
-        askingPrice: ''
+        askingPrice: '',
+        noOfMachines: 0
       } as PicanalFormData);
     }
     setShowTemplateDropdown(false);

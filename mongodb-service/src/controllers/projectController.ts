@@ -54,7 +54,8 @@ export const projectController = {
           millName: req.body.details?.millName,
           country: req.body.details?.country,
           delivery: req.body.details?.delivery,
-          askingPrice: req.body.details?.askingPrice
+          askingPrice: req.body.details?.askingPrice,
+          noOfMachines: req.body.details?.noOfMachines
         }
       };
 
@@ -81,7 +82,8 @@ export const projectController = {
           millName: req.body.details?.millName,
           country: req.body.details?.country,
           delivery: req.body.details?.delivery,
-          askingPrice: req.body.details?.askingPrice
+          askingPrice: req.body.details?.askingPrice,
+          noOfMachines: req.body.details?.noOfMachines
         }
       };
 

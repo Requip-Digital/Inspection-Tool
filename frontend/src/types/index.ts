@@ -12,6 +12,7 @@ export interface Project {
     country?: string;
     delivery?: string;
     askingPrice?: string;
+    noOfMachines: number;
   };
   machines: Machine[];
   imageUrl?: string;
