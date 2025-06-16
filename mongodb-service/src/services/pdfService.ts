@@ -37,6 +37,7 @@ interface Project {
     country?: string;
     delivery?: string;
     askingPrice?: string;
+    noOfMachines?: string;
   };
   machines: Machine[];
   templateId: string;
@@ -230,6 +231,10 @@ async function generatePDF(project: Project): Promise<string> {
           "Asking Price": project.details.askingPrice || "N/A",
         });
       }
+
+      Object.assign(projectData, {
+        "No. of Machine": project.details.noOfMachines || "N/A"
+      })
 
       addKeyValueTable(projectData);
 
