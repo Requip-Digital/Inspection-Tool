@@ -10,6 +10,7 @@ export interface IProjectDetails {
   country?: string;
   delivery?: string;
   askingPrice?: string;
+  noOfMachines: number;
 }
 
 export interface IMachineForPDF {
@@ -54,7 +55,8 @@ const ProjectDetailsSchema = new Schema({
   millName: String,
   country: String,
   delivery: String,
-  askingPrice: String
+  askingPrice: String,
+  noOfMachines: { type: Number, required: true }
 });
 
 const ProjectSchema = new Schema({
