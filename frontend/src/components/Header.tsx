@@ -2,11 +2,18 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import logo from '../assets/Requip.svg';
+import { useAppContext } from '../context/AppContext';
 
 const Header: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const isHome = location.pathname === '/';
+  const { user, logout } = useAppContext();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <header className="bg-blue-500 text-white p-4 flex items-center justify-between sticky top-0 z-10">
@@ -22,13 +29,16 @@ const Header: React.FC = () => {
         )}
       </div>
       <img src={logo} alt="REQUIP Logo" className="h-5" />
-      <button 
-      // to have menu uncomment the icon and add p-1 in class
-        className="w-[32px] h-[32px] rounded-full hover:bg-blue-600 transition-colors"
-        aria-label="Menu"
-      >
-        {/* <Menu size={24} /> */}
-      </button>
+      <div className="flex items-center gap-2">
+        {user && (
+          <button
+            onClick={handleLogout}
+            className="px-3 py-1 bg-white text-blue-600 rounded hover:bg-blue-100 transition"
+          >
+            Logout
+          </button>
+        )}
+      </div>
     </header>
   );
 };

@@ -3,15 +3,28 @@ import { config } from '../config';
 
 const API_URL = config.apiUrl;
 
+function getAuthHeaders() {
+  const token = localStorage.getItem('token');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
 export const projectService = {
   async getAllProjects(): Promise<ProjectType[]> {
-    const response = await fetch(`${API_URL}/projects`);
+    const response = await fetch(`${API_URL}/projects`, {
+      headers: {
+        ...getAuthHeaders(),
+      },
+    });
     if (!response.ok) throw new Error('Failed to fetch projects');
     return response.json();
   },
 
   async getProjectById(id: string): Promise<ProjectType | null> {
-    const response = await fetch(`${API_URL}/projects/${id}`);
+    const response = await fetch(`${API_URL}/projects/${id}`, {
+      headers: {
+        ...getAuthHeaders(),
+      },
+    });
     if (!response.ok) {
       if (response.status === 404) return null;
       throw new Error('Failed to fetch project');
@@ -24,6 +37,7 @@ export const projectService = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...getAuthHeaders(),
       },
       body: JSON.stringify(projectData),
     });
@@ -36,6 +50,7 @@ export const projectService = {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
+        ...getAuthHeaders(),
       },
       body: JSON.stringify(projectData),
     });
@@ -49,6 +64,9 @@ export const projectService = {
   async deleteProject(id: string): Promise<boolean> {
     const response = await fetch(`${API_URL}/projects/${id}`, {
       method: 'DELETE',
+      headers: {
+        ...getAuthHeaders(),
+      },
     });
     return response.ok;
   },
@@ -56,6 +74,9 @@ export const projectService = {
   async exportProject(id: string): Promise<Blob> {
     const response = await fetch(`${API_URL}/projects/${id}/export`, {
       method: 'POST',
+      headers: {
+        ...getAuthHeaders(),
+      },
     });
 
     if (!response.ok) {

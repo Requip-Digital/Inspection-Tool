@@ -35,6 +35,11 @@ interface IMachine {
   photos?: string[];
 }
 
+interface AuthUser {
+  id: string;
+  email: string;
+}
+
 interface AppContextType {
   projects: Project[];
   projectTemplates: Template[];
@@ -54,6 +59,11 @@ interface AppContextType {
   addMachine: (projectId: string, machine: Omit<Machine, 'id'>) => Promise<void>;
   updateMachine: (projectId: string, machine: Machine) => Promise<void>;
   deleteMachine: (projectId: string, machineId: string) => Promise<void>;
+  // Auth
+  user: AuthUser | null;
+  token: string | null;
+  login: (user: AuthUser, token: string) => void;
+  logout: () => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -65,9 +75,50 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Auth state
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+
+  // Load user/token from localStorage on mount
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    const storedToken = localStorage.getItem('token');
+    if (storedUser && storedToken) {
+      setUser(JSON.parse(storedUser));
+      setToken(storedToken);
+    }
+  }, []);
+
+  // Auth methods
+  const login = (user: AuthUser, token: string) => {
+    setUser(user);
+    setToken(token);
+    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('token', token);
+  };
+
+  const logout = () => {
+    // Clear all state
+    setUser(null);
+    setToken(null);
+    setProjects([]);
+    setCurrentProject(null);
+    setCurrentMachine(null);
+    setSearchTerm('');
+    setError(null);
+    
+    // Clear all localStorage
+    localStorage.clear();
+  };
 
   useEffect(() => {
     const loadProjects = async () => {
+      // Only try to load projects if we have a token
+      if (!token) {
+        setProjects([]);
+        return;
+      }
+
       setIsLoading(true);
       try {
         const loadedProjects = await projectService.getAllProjects();
@@ -81,7 +132,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
 
     loadProjects();
-  }, []);
+  }, [token]); // Add token as a dependency
 
   const addProject = async (projectData: Omit<Project, 'id'>) => {
     setIsLoading(true);
@@ -271,7 +322,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     deleteProject,
     addMachine,
     updateMachine,
-    deleteMachine
+    deleteMachine,
+    user,
+    token,
+    login,
+    logout,
   };
 
   return (
