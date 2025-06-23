@@ -13,11 +13,23 @@ interface ErrorResponse {
   error?: any;
 }
 
+// Extend Request type to include user from JWT middleware
+interface AuthRequest extends Request {
+  user?: {
+    userId: string;
+    email: string;
+  };
+}
+
 export const projectController = {
-  // Get all projects
-  async getAllProjects(req: Request, res: Response<any[] | ErrorResponse>) {
+  // Get all projects for the authenticated user
+  async getAllProjects(req: AuthRequest, res: Response<any[] | ErrorResponse>) {
     try {
-      const projects = await projectService.getAllProjects();
+      const userId = req.user?.userId;
+      if (!userId) {
+        return res.status(401).json({ message: 'User not authenticated' });
+      }
+      const projects = await projectService.getAllProjects(userId);
       res.json(projects);
     } catch (error) {
       console.error('Error fetching projects:', error);
@@ -25,10 +37,14 @@ export const projectController = {
     }
   },
 
-  // Get a single project by ID
-  async getProjectById(req: Request, res: Response<any | ErrorResponse>) {
+  // Get a single project by ID (only if owned by the user)
+  async getProjectById(req: AuthRequest, res: Response<any | ErrorResponse>) {
     try {
-      const project = await projectService.getProjectById(req.params.id);
+      const userId = req.user?.userId;
+      if (!userId) {
+        return res.status(401).json({ message: 'User not authenticated' });
+      }
+      const project = await projectService.getProjectById(req.params.id, userId);
       if (!project) {
         return res.status(404).json({ message: 'Project not found' });
       }
@@ -39,12 +55,18 @@ export const projectController = {
     }
   },
 
-  // Create a new project
-  async createProject(req: Request, res: Response<any | ErrorResponse>) {
+  // Create a new project with user ID
+  async createProject(req: AuthRequest, res: Response<any | ErrorResponse>) {
     try {
+      const userId = req.user?.userId;
+      if (!userId) {
+        return res.status(401).json({ message: 'User not authenticated' });
+      }
+
       const projectData = {
         name: req.body.name,
         templateId: req.body.templateId,
+        userId, // Add userId to project data
         details: {
           inspectionDate: req.body.details?.inspectionDate,
           city: req.body.details?.city,
@@ -67,9 +89,14 @@ export const projectController = {
     }
   },
 
-  // Update a project
-  async updateProject(req: Request, res: Response<any | ErrorResponse>) {
+  // Update a project (only if owned by the user)
+  async updateProject(req: AuthRequest, res: Response<any | ErrorResponse>) {
     try {
+      const userId = req.user?.userId;
+      if (!userId) {
+        return res.status(401).json({ message: 'User not authenticated' });
+      }
+
       const projectData = {
         name: req.body.name,
         templateId: req.body.templateId,
@@ -87,10 +114,10 @@ export const projectController = {
         }
       };
 
-      const project = await projectService.updateProject(req.params.id, projectData);
+      const project = await projectService.updateProject(req.params.id, projectData, userId);
       
       if (!project) {
-        return res.status(404).json({ message: 'Project not found' });
+        return res.status(404).json({ message: 'Project not found or unauthorized' });
       }
       res.json(project);
     } catch (error) {
@@ -99,12 +126,17 @@ export const projectController = {
     }
   },
 
-  // Delete a project
-  async deleteProject(req: Request, res: Response<{ message: string } | ErrorResponse>) {
+  // Delete a project (only if owned by the user)
+  async deleteProject(req: AuthRequest, res: Response<{ message: string } | ErrorResponse>) {
     try {
-      const project = await projectService.deleteProject(req.params.id);
+      const userId = req.user?.userId;
+      if (!userId) {
+        return res.status(401).json({ message: 'User not authenticated' });
+      }
+
+      const project = await projectService.deleteProject(req.params.id, userId);
       if (!project) {
-        return res.status(404).json({ message: 'Project not found' });
+        return res.status(404).json({ message: 'Project not found or unauthorized' });
       }
       res.json({ message: 'Project deleted successfully' });
     } catch (error) {
@@ -113,15 +145,20 @@ export const projectController = {
     }
   },
 
-  // Export project as PDF
-  async exportProject(req: Request, res: Response) {
+  // Export project as PDF (only if owned by the user)
+  async exportProject(req: AuthRequest, res: Response) {
     let pdfPath: string | null = null;
     
     try {
-      const projectDoc = await projectService.getProjectWithMachines(req.params.id);
+      const userId = req.user?.userId;
+      if (!userId) {
+        return res.status(401).json({ message: 'User not authenticated' });
+      }
+
+      const projectDoc = await projectService.getProjectWithMachines(req.params.id, userId);
       
       if (!projectDoc) {
-        return res.status(404).json({ message: 'Project not found' });
+        return res.status(404).json({ message: 'Project not found or unauthorized' });
       }
 
       // Convert MongoDB document to a plain object

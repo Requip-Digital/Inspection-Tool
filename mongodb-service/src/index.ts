@@ -5,6 +5,7 @@ import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import projectRoutes from './routes/projectRoutes';
 import machineRoutes from './routes/machineRoutes';
+import authRoutes from './routes/authRoutes';
 
 dotenv.config();
 
@@ -54,6 +55,7 @@ mongoose
   .catch((error) => console.error('MongoDB connection error:', error));
 
 // Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/machines', machineRoutes);
 

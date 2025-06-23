@@ -32,6 +32,7 @@ export interface IMachineForPDF {
 export interface IProject extends Document {
   name: string;
   templateId: string;
+  userId: string;
   details: IProjectDetails;
   machines: IMachineForPDF[];
   createdAt: Date;
@@ -62,6 +63,7 @@ const ProjectDetailsSchema = new Schema({
 const ProjectSchema = new Schema({
   name: { type: String, required: true },
   templateId: { type: String, required: true },
+  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   details: { type: ProjectDetailsSchema, required: true },
   machines: [{
     id: { type: Schema.Types.ObjectId, ref: 'Machine' },
