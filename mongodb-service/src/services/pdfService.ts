@@ -236,7 +236,11 @@ async function generatePDF(project: Project): Promise<string> {
         "No. of Machine": project.details.noOfMachines || "N/A"
       })
 
-      addKeyValueTable(projectData);
+      // Remove fields with value 'N/A' from projectData
+      const filteredProjectData: KeyValueData = Object.fromEntries(
+        Object.entries(projectData).filter(([_, value]) => value !== 'N/A')
+      );
+      addKeyValueTable(filteredProjectData);
 
       // Machines Section
       project.machines.forEach((machine, index) => {
@@ -256,7 +260,11 @@ async function generatePDF(project: Project): Promise<string> {
           section.fields.filter(field => field.type !== "file").forEach(field => {
             sectionData[field.label] = field.value || "N/A";
           });
-          addKeyValueTable(sectionData);
+          // Remove fields with value 'N/A' from sectionData
+          const filteredSectionData: KeyValueData = Object.fromEntries(
+            Object.entries(sectionData).filter(([_, value]) => value !== 'N/A')
+          );
+          addKeyValueTable(filteredSectionData);
         });
 
         // Add some spacing between machines
