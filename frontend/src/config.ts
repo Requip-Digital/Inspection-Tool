@@ -1,5 +1,5 @@
 export const config = {
   apiUrl: process.env.NODE_ENV === 'production'
-    ? process.env.API_URL
+    ? 'https://requip.onrender.com/api'
     : 'http://localhost:5001/api'
 }; 
