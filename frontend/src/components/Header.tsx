@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, LogOutIcon } from 'lucide-react';
 import logo from '../assets/Requip.svg';
 import { useAppContext } from '../context/AppContext';
 
@@ -29,13 +29,13 @@ const Header: React.FC = () => {
         )}
       </div>
       <img src={logo} alt="REQUIP Logo" className="h-5" />
-      <div className="flex items-center gap-2">
+      <div className="flex items-center">
         {user && (
           <button
             onClick={handleLogout}
-            className="px-3 py-1 bg-white text-blue-600 rounded hover:bg-blue-100 transition"
+            className="p-1 rounded-full hover:bg-blue-600 transition-colors"
           >
-            Logout
+            <LogOutIcon size={24}/>
           </button>
         )}
       </div>
