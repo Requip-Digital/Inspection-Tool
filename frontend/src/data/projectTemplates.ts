@@ -1,9 +1,11 @@
 import { Template } from '../types';
+import { TEMPLATE_CATEGORIES } from '../types/constants';
 
 export const PROJECT_TEMPLATES: Template[] = [
   {
     "id": "1",
     "name": "Toyota",
+    "category": TEMPLATE_CATEGORIES['1'],
     "sections": [
       {
         "id": "details",
@@ -22,6 +24,7 @@ export const PROJECT_TEMPLATES: Template[] = [
   {
     "id": "2",
     "name": "Picanol",
+    "category": TEMPLATE_CATEGORIES['2'],
     "sections": [
       {
         "id": "details",
@@ -41,6 +44,7 @@ export const PROJECT_TEMPLATES: Template[] = [
   {
     "id": "3",
     "name": "Picanol Rapier",
+    "category": TEMPLATE_CATEGORIES['3'],
     "sections": [
       {
         "id": "details",
@@ -60,6 +64,7 @@ export const PROJECT_TEMPLATES: Template[] = [
   {
     "id": "4",
     "name": "Somet Rapier",
+    "category": TEMPLATE_CATEGORIES['4'],
     "sections": [
       {
         "id": "details",
@@ -79,6 +84,7 @@ export const PROJECT_TEMPLATES: Template[] = [
   {
     "id": "5",
     "name": "Vamatex Rapier",
+    "category": TEMPLATE_CATEGORIES['5'],
     "sections": [
       {
         "id": "details",
@@ -98,6 +104,7 @@ export const PROJECT_TEMPLATES: Template[] = [
   {
     "id": "6",
     "name": "SMIT Rapier",
+    "category": TEMPLATE_CATEGORIES['6'],
     "sections": [
       {
         "id": "details",
@@ -117,6 +124,7 @@ export const PROJECT_TEMPLATES: Template[] = [
   {
     "id": "7",
     "name": "Itema Rapier",
+    "category": TEMPLATE_CATEGORIES['7'],
     "sections": [
       {
         "id": "details",
