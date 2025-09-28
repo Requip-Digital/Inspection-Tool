@@ -36,7 +36,11 @@ const PORT = process.env.PORT || 5001;
 // Middleware
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://requip-phi.vercel.app', 'https://www.requip-phi.vercel.app'] 
+    ? [
+        'https://inspection-tool-theta.vercel.app',        
+        'https://www.inspection-tool-theta.vercel.app',
+        'http://localhost:5173'
+      ] 
     : 'http://localhost:5173',
   credentials: true
 }));
