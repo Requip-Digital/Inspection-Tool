@@ -35,15 +35,14 @@ const PORT = process.env.PORT || 5001;
 
 // Middleware
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? [
-        'https://inspection-tool-theta.vercel.app',        
-        'https://www.inspection-tool-theta.vercel.app',
-        'http://localhost:5173'
-      ] 
-    : 'http://localhost:5173',
+  origin: [
+    'https://inspection-tool-theta.vercel.app',
+    'https://www.inspection-tool-theta.vercel.app',
+    'http://localhost:5173'
+  ],
   credentials: true
 }));
+
 app.use(express.json());
 
 // MongoDB Connection
@@ -58,6 +57,7 @@ mongoose
   .then(() => console.log('Connected to MongoDB'))
   .catch((error) => console.error('MongoDB connection error:', error));
 
+  
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
