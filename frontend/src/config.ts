@@ -4,4 +4,4 @@ export const config = {
       ? 'https://inspection-tool-backend-ugwa.onrender.com'
       : 'http://localhost:5001'
   ),
-};
+};// RAILWAY DISABLED - USING RENDER BACKEND EXCLUSIVELY
