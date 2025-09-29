@@ -33,16 +33,19 @@ const PORT = process.env.PORT || 8080;
 // // Apply rate limiting to all routes
 // app.use(globalLimiter);
 
+app.set('trust proxy', 1);
+
 // Middleware
 app.use(cors({
   origin: [
-    'https://inspection-tool-theta.vercel.app',
-    'https://www.inspection-tool-theta.vercel.app',
-    'http://localhost:5173'
+    'https://inspection-tool-2hmg07ba7-requip-team.vercel.app',
+    'https://inspection-tool-theta.vercel.app', 
   ],
+  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
   credentials: true
 }));
 
+app.options('*', cors()); // Enable pre-flight for all routes
 app.use(express.json());
 
 // MongoDB Connection
