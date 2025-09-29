@@ -63,7 +63,8 @@ class Server {
   private getAllowedOrigins(): string[] {
     const productionOrigins = [
       'https://inspection-tool-theta.vercel.app',
-      'https://www.inspection-tool-theta.vercel.app'
+      'https://www.inspection-tool-theta.vercel.app',
+      'https://inspection-tool-backend-ugwa.onrender.com'
     ];
 
     const developmentOrigins = [
