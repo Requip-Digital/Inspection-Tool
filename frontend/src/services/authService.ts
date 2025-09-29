@@ -76,14 +76,14 @@ async function apiRequest<T>(
 
 // Auth services
 export async function requestOtp(email: string): Promise<AuthResponse> {
-  return apiRequest<AuthResponse>('/auth/request-otp', {
+  return apiRequest<AuthResponse>('/api/auth/request-otp', {
     method: 'POST',
     body: JSON.stringify({ email }),
   });
 }
 
 export async function verifyOtp(email: string, otp: string): Promise<AuthResponse> {
-  return apiRequest<AuthResponse>('/auth/verify-otp', {
+  return apiRequest<AuthResponse>('/api/auth/verify-otp', {
     method: 'POST',
     body: JSON.stringify({ email, otp }),
   });
