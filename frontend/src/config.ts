@@ -1,3 +1,5 @@
 export const config = {
-  apiUrl: import.meta.env.VITE_API_URL || 'http://localhost:5001'
+  apiUrl: process.env.NODE_ENV === 'production'
+    ? 'https://inspection-tool-backend-ugwa.onrender.com'
+    : 'http://localhost:5001/api'
 };
