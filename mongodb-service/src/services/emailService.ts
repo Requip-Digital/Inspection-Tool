@@ -25,7 +25,9 @@ const createTransporter = async () => {
   });
 
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
     auth: {
       type: 'OAuth2',
       user: process.env.GOOGLE_SENDER_EMAIL,
