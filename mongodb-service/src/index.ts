@@ -61,22 +61,23 @@ class Server {
   }
 
   private getAllowedOrigins(): string[] {
-    const productionOrigins = [
-      'https://inspection-tool-theta.vercel.app',
-      'https://www.inspection-tool-theta.vercel.app',
-      'https://inspection-tool-backend-ugwa.onrender.com'
-    ];
+  const productionOrigins = [
+    'https://inspection-tool-theta.vercel.app',
+    'https://www.inspection-tool-theta.vercel.app',
+    'https://inspection-tool-backend-ugwa.onrender.com',
+    'https://inspection-tool-git-main-requip-team.vercel.app'
+  ];
 
-    const developmentOrigins = [
-      'http://localhost:5173',
-      'https://localhost:5173',
-      'http://127.0.0.1:5173'
-    ];
+  const developmentOrigins = [
+    'http://localhost:5173',
+    'https://localhost:5173',
+    'http://127.0.0.1:5173'
+  ];
 
-    return process.env.NODE_ENV === 'production' 
-      ? productionOrigins 
-      : [...productionOrigins, ...developmentOrigins];
-  }
+  return process.env.NODE_ENV === 'production'
+    ? productionOrigins
+    : [...productionOrigins, ...developmentOrigins];
+}
 
   private initializeRateLimiting(): void {
     const generalLimiter = rateLimit({
